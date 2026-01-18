@@ -55,46 +55,6 @@
       margin-bottom: 30px;
     }
 
-    .demo-logins {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
-    }
-
-    .demo-logins h5 {
-      font-size: 1rem;
-      margin-bottom: 15px;
-      opacity: 0.9;
-    }
-
-    .demo-btn {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 10px;
-      width: 100%;
-      text-align: left;
-      margin-bottom: 10px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-
-    .demo-btn:hover {
-      background: rgba(255,255,255,0.3);
-      color: white;
-    }
-
-    .demo-btn .demo-role {
-      font-weight: 600;
-      display: block;
-    }
-
-    .demo-btn .demo-email {
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-
     .login-right {
       padding: 40px;
     }
@@ -215,34 +175,6 @@
           <h2><i class="bi bi-people-fill me-2"></i>AI Recruiting</h2>
           <p>Streamline your hiring process with AI-powered interviews, smart scheduling, and data-driven insights.</p>
 
-          <div class="demo-logins">
-            <h5><i class="bi bi-lightning-fill me-2"></i>Quick Demo Access</h5>
-
-            <button class="demo-btn" onclick="fillDemo('superadmin@system.local', 'superadmin123')">
-              <span class="demo-role"><i class="bi bi-shield-lock me-2"></i>Super Admin</span>
-              <span class="demo-email">Full system access</span>
-            </button>
-
-            <button class="demo-btn" onclick="fillDemo('admin@demo.local', 'admin123')">
-              <span class="demo-role"><i class="bi bi-building me-2"></i>Company Admin</span>
-              <span class="demo-email">Organization management</span>
-            </button>
-
-            <button class="demo-btn" onclick="fillDemo('manager@demo.local', 'manager123')">
-              <span class="demo-role"><i class="bi bi-person-badge me-2"></i>Manager</span>
-              <span class="demo-email">Hiring & interviews</span>
-            </button>
-
-            <button class="demo-btn" onclick="fillDemo('supervisor@demo.local', 'supervisor123')">
-              <span class="demo-role"><i class="bi bi-eye me-2"></i>Supervisor</span>
-              <span class="demo-email">View sessions & analytics</span>
-            </button>
-
-            <button class="demo-btn" onclick="fillDemo('candidate@demo.local', 'candidate123')">
-              <span class="demo-role"><i class="bi bi-person me-2"></i>Candidate</span>
-              <span class="demo-email">Job applicant view</span>
-            </button>
-          </div>
         </div>
 
         <!-- Right Side - Login Form -->
@@ -318,11 +250,6 @@
   <script>
     const basePath = '<%= basePath %>';
     const alertBox = document.getElementById('alertBox');
-
-    function fillDemo(email, password) {
-      document.getElementById('email').value = email;
-      document.getElementById('password').value = password;
-    }
 
     function togglePassword() {
       const passwordInput = document.getElementById('password');

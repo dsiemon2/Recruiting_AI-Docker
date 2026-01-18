@@ -408,9 +408,6 @@
             <a class="nav-link" href="#pricing">Pricing</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#demo">Demo</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="#about">About</a>
           </li>
         </ul>
@@ -540,83 +537,6 @@
             </div>
             <h4 class="feature-title">24 Languages</h4>
             <p class="text-muted">Interview candidates in their preferred language. Support for 24 languages ensures global reach.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Demo Section -->
-  <section class="demo-section" id="demo">
-    <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold">Try It Now</h2>
-        <p class="text-muted">Experience the platform with our demo accounts - no signup required</p>
-      </div>
-      <div class="row g-4 justify-content-center">
-        <div class="col-lg-2 col-md-6">
-          <div class="demo-card">
-            <div class="demo-icon">
-              <i class="bi bi-shield-lock"></i>
-            </div>
-            <h5 class="demo-title">Super Admin</h5>
-            <p class="demo-role">Full System Access</p>
-            <p class="demo-features">Manage companies, system settings, all features</p>
-            <button class="btn btn-demo" onclick="demoLogin('superadmin@system.local', 'superadmin123')">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
-            </button>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-6">
-          <div class="demo-card">
-            <div class="demo-icon">
-              <i class="bi bi-building"></i>
-            </div>
-            <h5 class="demo-title">Company Admin</h5>
-            <p class="demo-role">Organization Management</p>
-            <p class="demo-features">Manage users, job roles, company settings</p>
-            <button class="btn btn-demo" onclick="demoLogin('admin@demo.local', 'admin123')">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
-            </button>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-6">
-          <div class="demo-card">
-            <div class="demo-icon">
-              <i class="bi bi-person-badge"></i>
-            </div>
-            <h5 class="demo-title">Manager</h5>
-            <p class="demo-role">Hiring Manager</p>
-            <p class="demo-features">Schedule interviews, review candidates, analytics</p>
-            <button class="btn btn-demo" onclick="demoLogin('manager@demo.local', 'manager123')">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
-            </button>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-6">
-          <div class="demo-card">
-            <div class="demo-icon">
-              <i class="bi bi-eye"></i>
-            </div>
-            <h5 class="demo-title">Supervisor</h5>
-            <p class="demo-role">View Only</p>
-            <p class="demo-features">View sessions, analytics, candidate progress</p>
-            <button class="btn btn-demo" onclick="demoLogin('supervisor@demo.local', 'supervisor123')">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
-            </button>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-6">
-          <div class="demo-card">
-            <div class="demo-icon">
-              <i class="bi bi-person"></i>
-            </div>
-            <h5 class="demo-title">Candidate</h5>
-            <p class="demo-role">Job Applicant</p>
-            <p class="demo-features">View scheduled interviews, take AI interview</p>
-            <button class="btn btn-demo" onclick="demoLogin('candidate@demo.local', 'candidate123')">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
-            </button>
           </div>
         </div>
       </div>
@@ -760,7 +680,6 @@
           <h5>Product</h5>
           <a href="#features">Features</a>
           <a href="#pricing">Pricing</a>
-          <a href="#demo">Demo</a>
         </div>
         <div class="col-md-2">
           <h5>Support</h5>
@@ -790,32 +709,6 @@
   <script>
     const basePath = '<%= basePath %>';
 
-    // Demo login function
-    async function demoLogin(email, password) {
-      try {
-        const res = await fetch(`${basePath}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: email, password: password }),
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-          localStorage.setItem('authToken', data.data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user));
-          if (data.data.company) {
-            localStorage.setItem('company', JSON.stringify(data.data.company));
-          }
-          window.location.href = `${basePath}/admin?token=${data.data.token}`;
-        } else {
-          alert('Demo login failed: ' + (data.error || 'Unknown error'));
-        }
-      } catch (err) {
-        console.error('Login error:', err);
-        alert('An error occurred. Please try again.');
-      }
-    }
   </script>
 </body>
 </html>

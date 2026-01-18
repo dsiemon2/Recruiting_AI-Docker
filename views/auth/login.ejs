@@ -215,57 +215,6 @@
       transform: translateY(-1px);
     }
 
-    /* Demo Users */
-    .demo-users {
-      background: #f0fdfa;
-      border: 1px solid #99f6e4;
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .demo-users-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--primary-color);
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .demo-user-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      margin-bottom: 0.5rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-      text-align: left;
-    }
-
-    .demo-user-btn:hover {
-      border-color: var(--primary-color);
-      background: #f0fdfa;
-    }
-
-    .demo-user-role {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--primary-color);
-    }
-
-    .demo-user-email {
-      font-size: 0.85rem;
-      color: #374151;
-    }
-
     .back-link {
       display: inline-flex;
       align-items: center;
@@ -360,47 +309,6 @@
             <% } %>
           </div>
 
-          <!-- Demo Users Quick Login -->
-          <div class="demo-users">
-            <div class="demo-users-title">
-              <i class="bi bi-lightning-charge-fill"></i> Quick Demo Login
-            </div>
-            <div class="row g-2">
-              <div class="col-6">
-                <button type="button" class="demo-user-btn" onclick="fillLogin('superadmin@system.local', 'superadmin123')">
-                  <i class="bi bi-shield-fill text-danger"></i>
-                  <div>
-                    <div class="demo-user-role">Super Admin</div>
-                  </div>
-                </button>
-              </div>
-              <div class="col-6">
-                <button type="button" class="demo-user-btn" onclick="fillLogin('admin@demo.local', 'admin123')">
-                  <i class="bi bi-person-fill-gear text-primary"></i>
-                  <div>
-                    <div class="demo-user-role">Company Admin</div>
-                  </div>
-                </button>
-              </div>
-              <div class="col-6">
-                <button type="button" class="demo-user-btn" onclick="fillLogin('manager@demo.local', 'manager123')">
-                  <i class="bi bi-person-fill" style="color: var(--primary-color);"></i>
-                  <div>
-                    <div class="demo-user-role">Manager</div>
-                  </div>
-                </button>
-              </div>
-              <div class="col-6">
-                <button type="button" class="demo-user-btn" onclick="fillLogin('supervisor@demo.local', 'supervisor123')">
-                  <i class="bi bi-eye-fill text-purple" style="color: #7c3aed;"></i>
-                  <div>
-                    <div class="demo-user-role">Supervisor</div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-
           <form id="loginForm" novalidate>
             <!-- Email or Username -->
             <div class="mb-3">
@@ -472,14 +380,6 @@
   <script>
     // Base path for Docker deployment
     const basePath = '/RecruitingAI';
-
-    // Fill login form with demo credentials
-    function fillLogin(email, password) {
-      document.getElementById('identifier').value = email;
-      document.getElementById('password').value = password;
-      // Auto-submit
-      document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-    }
 
     // Toggle password visibility
     function togglePassword() {
