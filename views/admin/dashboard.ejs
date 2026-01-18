@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AI Recruiting Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <script>window.APP_BASE_PATH = '<%= basePath %>';</script>
+  <style>
+    :root {
+      --sidebar-bg: <%= branding?.primaryColor || '#0d9488' %>;
+      --sidebar-hover: <%= branding?.secondaryColor || '#0f766e' %>;
+    }
+    /* Sidebar with sticky scroll - account for top navbar */
+    .sidebar {
+      background: var(--sidebar-bg);
+      height: calc(100vh - 56px);
+      position: sticky;
+      top: 56px;
+      overflow-y: scroll !important;
+      overflow-x: hidden;
+    }
+    .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 0.75rem 1rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .sidebar .nav-link i { margin-right: 0.5rem; }
+    .main-content { background: #f8f9fa; min-height: 100vh; }
+    .nav-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 0.5rem 0; }
+    .nav-section { color: rgba(255,255,255,0.5); font-size: 0.75rem; padding: 0.5rem 1rem; text-transform: uppercase; }
+    .stat-card { border-radius: 12px; border: none; }
+    .stat-card .stat-icon { font-size: 2.5rem; opacity: 0.8; }
+    .stat-card .stat-value { font-size: 2rem; font-weight: bold; }
+    .bulk-actions { display: none; background: #e3f2fd; padding: 0.75rem 1rem; border-radius: 8px; }
+    .bulk-actions.show { display: flex; }
+    .row-checkbox { cursor: pointer; }
+    tr.selected { background-color: #e3f2fd !important; }
+    /* Always show scrollbar - WebKit */
+    .sidebar::-webkit-scrollbar { width: 10px; display: block; }
+    .sidebar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 5px; min-height: 40px; }
+    .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.6); }
+    /* Firefox */
+    .sidebar { scrollbar-width: auto; scrollbar-color: rgba(255,255,255,0.4) rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body>
+  <%- include('_topnav', { token, basePath, branding, userRole, userName }) %>
+  <div class="container-fluid">
+    <div class="row">
+      <%- include('_sidebar', { token, active: 'dashboard', basePath, branding, userRole }) %>
+
+      <main class="col-md-10 ms-sm-auto main-content p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2><i class="bi bi-speedometer2 text-primary me-2"></i>Dashboard</h2>
+          <a href="<%= basePath %>/admin/interviews/new?token=<%= token %>" class="btn btn-primary" data-bs-toggle="tooltip" title="Schedule a new interview">
+            <i class="bi bi-plus-lg"></i> New Interview
+          </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-value"><%= stats.totalInterviews || 0 %></div>
+                  <div>Total Interviews</div>
+                </div>
+                <i class="bi bi-calendar-check stat-icon"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card bg-warning text-dark">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-value"><%= stats.scheduledInterviews || 0 %></div>
+                  <div>Scheduled</div>
+                </div>
+                <i class="bi bi-hourglass-split stat-icon"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card bg-success text-white">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-value"><%= stats.completedInterviews || 0 %></div>
+                  <div>Completed</div>
+                </div>
+                <i class="bi bi-check-circle stat-icon"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card bg-info text-white">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-value"><%= stats.jobRoleCount || 0 %></div>
+                  <div>Job Roles</div>
+                </div>
+                <i class="bi bi-briefcase stat-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <a href="<%= basePath %>/admin/interviews/new?token=<%= token %>" class="btn btn-outline-primary w-100 py-3" data-bs-toggle="tooltip" title="Schedule a new candidate interview">
+                      <i class="bi bi-calendar-plus d-block mb-2" style="font-size: 1.5rem;"></i>
+                      Schedule Interview
+                    </a>
+                  </div>
+                  <div class="col-md-3">
+                    <a href="<%= basePath %>/admin/job-roles?token=<%= token %>" class="btn btn-outline-success w-100 py-3" data-bs-toggle="tooltip" title="Manage job roles and question templates">
+                      <i class="bi bi-briefcase d-block mb-2" style="font-size: 1.5rem;"></i>
+                      Manage Job Roles
+                    </a>
+                  </div>
+                  <div class="col-md-3">
+                    <a href="<%= basePath %>/admin/questions?token=<%= token %>" class="btn btn-outline-info w-100 py-3" data-bs-toggle="tooltip" title="View and edit interview questions">
+                      <i class="bi bi-chat-square-text d-block mb-2" style="font-size: 1.5rem;"></i>
+                      Edit Questions
+                    </a>
+                  </div>
+                  <div class="col-md-3">
+                    <a href="<%= basePath %>/admin/users?token=<%= token %>" class="btn btn-outline-warning w-100 py-3" data-bs-toggle="tooltip" title="Manage team members and permissions">
+                      <i class="bi bi-person-badge d-block mb-2" style="font-size: 1.5rem;"></i>
+                      Manage Users
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Interviews -->
+        <div class="card">
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Upcoming Interviews</h5>
+            <a href="<%= basePath %>/admin/interviews?token=<%= token %>" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View all interviews">View All</a>
+          </div>
+          <div class="card-body p-0">
+            <div class="bulk-actions m-3" id="bulkActions">
+              <span class="me-3"><strong id="selectedCount">0</strong> selected</span>
+              <button class="btn btn-sm btn-outline-warning me-2" onclick="rescheduleSelected()" data-bs-toggle="tooltip" title="Reschedule selected interviews">
+                <i class="bi bi-calendar"></i> Reschedule
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="cancelSelected()" data-bs-toggle="tooltip" title="Cancel selected interviews">
+                <i class="bi bi-x-circle"></i> Cancel Selected
+              </button>
+            </div>
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 40px;">
+                    <input type="checkbox" class="form-check-input" id="selectAll" data-bs-toggle="tooltip" title="Select all">
+                  </th>
+                  <th>Candidate</th>
+                  <th>Job Role</th>
+                  <th>Scheduled</th>
+                  <th>Mode</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <% if (upcomingInterviews && upcomingInterviews.length > 0) { %>
+                  <% upcomingInterviews.forEach(interview => { %>
+                  <tr>
+                    <td><input type="checkbox" class="form-check-input row-checkbox" data-id="<%= interview.id %>"></td>
+                    <td>
+                      <strong><%= interview.candidateName %></strong><br>
+                      <small class="text-muted"><%= interview.candidateEmail %></small>
+                    </td>
+                    <td><%= interview.jobRole?.title || 'N/A' %></td>
+                    <td><%= new Date(interview.scheduledAt).toLocaleString() %></td>
+                    <td>
+                      <span class="badge bg-<%= interview.mode === 'AI_ONLY' ? 'info' : 'primary' %>">
+                        <%= interview.mode === 'AI_ONLY' ? 'AI Only' : 'Hybrid' %>
+                      </span>
+                    </td>
+                    <td>
+                      <a href="<%= basePath %>/admin/interviews/<%= interview.id %>?token=<%= token %>"
+                         class="btn btn-sm btn-outline-primary"
+                         data-bs-toggle="tooltip"
+                         title="View interview details">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <% }) %>
+                <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">
+                    No upcoming interviews. Schedule one to get started.
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div class="text-muted small">Showing <span id="showingStart">1</span>-<span id="showingEnd"><%= upcomingInterviews?.length || 0 %></span> of <span id="totalRows"><%= upcomingInterviews?.length || 0 %></span></div>
+            <nav>
+              <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+            </nav>
+            <select class="form-select form-select-sm" id="pageSize" style="width: auto;">
+              <option value="10">10 / page</option>
+              <option value="25">25 / page</option>
+              <option value="50">50 / page</option>
+            </select>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const token = '<%= token %>';
+    const basePath = window.APP_BASE_PATH || '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+
+      // Row selection
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      const bulkActions = document.getElementById('bulkActions');
+      const selectedCount = document.getElementById('selectedCount');
+
+      selectAll?.addEventListener('change', () => {
+        checkboxes.forEach(cb => {
+          cb.checked = selectAll.checked;
+          cb.closest('tr')?.classList.toggle('selected', cb.checked);
+        });
+        updateBulkActions();
+      });
+
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+          cb.closest('tr')?.classList.toggle('selected', cb.checked);
+          updateBulkActions();
+        });
+      });
+
+      function updateBulkActions() {
+        const checked = document.querySelectorAll('.row-checkbox:checked').length;
+        selectedCount.textContent = checked;
+        bulkActions?.classList.toggle('show', checked > 0);
+      }
+    });
+
+    function getSelectedIds() {
+      return Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.dataset.id);
+    }
+
+    function rescheduleSelected() {
+      const ids = getSelectedIds();
+      if (ids.length === 0) return;
+      alert(`Reschedule functionality for ${ids.length} interview(s) - to be implemented`);
+    }
+
+    async function cancelSelected() {
+      const ids = getSelectedIds();
+      if (ids.length === 0) return;
+      if (!confirm(`Are you sure you want to cancel ${ids.length} interview(s)?`)) return;
+
+      try {
+        const res = await fetch(`${basePath}/admin/interviews/bulk-cancel?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids })
+        });
+        const result = await res.json();
+        if (result.success) {
+          location.reload();
+        } else {
+          alert('Error: ' + (result.error || 'Failed to cancel'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

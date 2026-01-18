@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= storeInfo?.businessName || 'AI Recruiting Assistant' %> - Smart Hiring Made Simple</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: <%= branding?.primaryColor || '#0d9488' %>;
+      --secondary-color: <%= branding?.secondaryColor || '#0f766e' %>;
+      --accent-color: <%= branding?.accentColor || '#14b8a6' %>;
+    }
+
+    * {
+      font-family: '<%= branding?.bodyFont || 'Inter' %>', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: '<%= branding?.headingFont || 'Inter' %>', sans-serif;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--primary-color) !important;
+    }
+
+    .nav-link {
+      color: #374151 !important;
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary-color) !important;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      padding: 0.6rem 1.5rem;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+
+    .btn-outline-primary {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      padding: 0.6rem 1.5rem;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      padding: 8rem 0 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 80%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 60%);
+      transform: rotate(-15deg);
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 2rem;
+      max-width: 540px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero .btn-light {
+      background: white;
+      color: var(--primary-color);
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      border: none;
+    }
+
+    .hero .btn-light:hover {
+      background: #f3f4f6;
+    }
+
+    .hero .btn-outline-light {
+      border: 2px solid white;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+    }
+
+    .hero .btn-outline-light:hover {
+      background: white;
+      color: var(--primary-color);
+    }
+
+    .trust-badges {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
+
+    .trust-badges i {
+      color: #22c55e;
+      margin-right: 0.5rem;
+    }
+
+    .hero-image {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-image img {
+      border-radius: 16px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .hero-mockup {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      padding: 1.5rem;
+      max-width: 480px;
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mockup-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .mockup-content {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .mockup-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .mockup-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Social Proof */
+    .social-proof {
+      background: #f9fafb;
+      padding: 3rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .social-proof p {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+
+    .company-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      opacity: 0.6;
+    }
+
+    .company-logos span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #9ca3af;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 6rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+
+    .section-title p {
+      color: #6b7280;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .step-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #111827;
+    }
+
+    .step-card p {
+      color: #6b7280;
+    }
+
+    /* Features */
+    .features {
+      background: #f9fafb;
+      padding: 6rem 0;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      height: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+
+    .feature-card p {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+
+    /* Pricing Preview */
+    .pricing {
+      padding: 6rem 0;
+    }
+
+    .pricing-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+      transition: all 0.3s;
+      height: 100%;
+    }
+
+    .pricing-card.popular {
+      border-color: var(--primary-color);
+      position: relative;
+    }
+
+    .pricing-card.popular::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-color);
+      color: white;
+      padding: 0.25rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .pricing-price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 1rem 0;
+    }
+
+    .pricing-price span {
+      font-size: 1rem;
+      color: #6b7280;
+      font-weight: 400;
+    }
+
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin: 1.5rem 0;
+    }
+
+    .pricing-features li {
+      padding: 0.5rem 0;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pricing-features i {
+      color: var(--primary-color);
+    }
+
+    /* CTA */
+    .cta {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      padding: 5rem 0;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #111827;
+      color: #9ca3af;
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-brand {
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links h5 {
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links a {
+      color: #9ca3af;
+      text-decoration: none;
+      display: block;
+      padding: 0.3rem 0;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #374151;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 5rem 0 4rem;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+
+      .hero p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .trust-badges {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .hero-mockup {
+        margin: 3rem auto 0;
+      }
+    }
+
+    /* Demo Login Section */
+    .demo-login {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .demo-login h5 {
+      color: #c2410c;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .demo-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #fed7aa;
+    }
+
+    .demo-user:hover {
+      background: #fff7ed;
+      border-color: #fb923c;
+    }
+
+    .demo-user-role {
+      font-weight: 600;
+      color: #c2410c;
+      font-size: 0.8rem;
+    }
+
+    .demo-user-email {
+      color: #374151;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-person-badge me-2"></i><%= storeInfo?.businessName || 'RecruitingAI' %>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+        </ul>
+        <div class="d-flex gap-2">
+          <a href="<%= basePath %>/auth/login" class="btn btn-outline-primary">Sign In</a>
+          <a href="<%= basePath %>/auth/register" class="btn btn-primary">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1>AI-Powered Interviews That Scale Your Hiring</h1>
+          <p><%= storeInfo?.tagline || 'Conduct hundreds of structured interviews automatically. Save 80% of recruiter time while finding better candidates.' %></p>
+          <div class="hero-buttons">
+            <a href="<%= basePath %>/auth/register" class="btn btn-light btn-lg">Start Free Trial</a>
+            <a href="#demo" class="btn btn-outline-light btn-lg">
+              <i class="bi bi-play-circle me-2"></i>Watch Demo
+            </a>
+          </div>
+          <div class="trust-badges">
+            <span><i class="bi bi-check-circle-fill"></i> No credit card required</span>
+            <span><i class="bi bi-check-circle-fill"></i> 14-day free trial</span>
+            <span><i class="bi bi-check-circle-fill"></i> Cancel anytime</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="hero-mockup">
+            <div class="mockup-header">
+              <span class="mockup-dot" style="background: #ef4444;"></span>
+              <span class="mockup-dot" style="background: #fbbf24;"></span>
+              <span class="mockup-dot" style="background: #22c55e;"></span>
+              <span class="ms-auto text-muted small">Interview Dashboard</span>
+            </div>
+            <div class="mockup-content">
+              <div class="mockup-item">
+                <div class="mockup-avatar">JD</div>
+                <div>
+                  <div class="fw-semibold">John Doe</div>
+                  <small class="text-muted">Senior Developer - Completed</small>
+                </div>
+                <span class="ms-auto badge bg-success">95%</span>
+              </div>
+              <div class="mockup-item">
+                <div class="mockup-avatar" style="background: #f59e0b;">SM</div>
+                <div>
+                  <div class="fw-semibold">Sarah Miller</div>
+                  <small class="text-muted">Product Manager - In Progress</small>
+                </div>
+                <span class="ms-auto badge bg-warning text-dark">Live</span>
+              </div>
+              <div class="mockup-item">
+                <div class="mockup-avatar" style="background: #8b5cf6;">TW</div>
+                <div>
+                  <div class="fw-semibold">Tom Wilson</div>
+                  <small class="text-muted">UX Designer - Scheduled</small>
+                </div>
+                <span class="ms-auto badge bg-secondary">2:00 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof -->
+  <section class="social-proof">
+    <div class="container text-center">
+      <p class="mb-3">Trusted by innovative companies worldwide</p>
+      <div class="company-logos">
+        <span>TechCorp</span>
+        <span>InnovateCo</span>
+        <span>FutureLabs</span>
+        <span>GrowthHQ</span>
+        <span>ScaleUp</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-title">
+        <h2>How It Works</h2>
+        <p>Get started in minutes with our simple three-step process</p>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3>Configure Your Interview</h3>
+            <p>Set up job roles, questions, and scoring criteria. Use our templates or create custom interview flows.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3>AI Conducts Interviews</h3>
+            <p>Candidates receive invites and interview with our AI. Available 24/7 in 24 languages.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3>Review & Decide</h3>
+            <p>Get full transcripts, AI summaries, and candidate scoring. Make data-driven hiring decisions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Powerful Features</h2>
+        <p>Everything you need to transform your hiring process</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-robot"></i></div>
+            <h3>AI-Powered Conversations</h3>
+            <p>Natural, flowing interviews with intelligent follow-up questions and adaptive difficulty.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-translate"></i></div>
+            <h3>24 Languages</h3>
+            <p>Conduct interviews in any major language. Perfect for global hiring needs.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-graph-up"></i></div>
+            <h3>Advanced Analytics</h3>
+            <p>Comprehensive dashboards, candidate scoring, and hiring funnel insights.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-microsoft-teams"></i></div>
+            <h3>MS Teams Integration</h3>
+            <p>Seamlessly integrate with Microsoft Teams for hybrid interview workflows.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <h3>Full Transcripts</h3>
+            <p>Detailed transcripts with timestamps, speaker identification, and searchability.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+            <h3>Enterprise Security</h3>
+            <p>SOC2 compliant, GDPR ready, with end-to-end encryption.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Preview -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-title">
+        <h2>Simple, Transparent Pricing</h2>
+        <p>Start free. Upgrade when you're ready.</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+          <div class="pricing-card">
+            <h3>Starter</h3>
+            <div class="pricing-price">$49<span>/month</span></div>
+            <p class="text-muted">Perfect for small teams</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-lg"></i> 25 interviews/month</li>
+              <li><i class="bi bi-check-lg"></i> 3 job roles</li>
+              <li><i class="bi bi-check-lg"></i> 2 team members</li>
+              <li><i class="bi bi-check-lg"></i> Email support</li>
+            </ul>
+            <a href="<%= basePath %>/auth/register" class="btn btn-outline-primary w-100">Start Free Trial</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="pricing-card popular">
+            <h3>Professional</h3>
+            <div class="pricing-price">$99<span>/month</span></div>
+            <p class="text-muted">For growing companies</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-lg"></i> 100 interviews/month</li>
+              <li><i class="bi bi-check-lg"></i> 10 job roles</li>
+              <li><i class="bi bi-check-lg"></i> 5 team members</li>
+              <li><i class="bi bi-check-lg"></i> MS Teams integration</li>
+              <li><i class="bi bi-check-lg"></i> Priority support</li>
+            </ul>
+            <a href="<%= basePath %>/auth/register" class="btn btn-primary w-100">Start Free Trial</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="pricing-card">
+            <h3>Business</h3>
+            <div class="pricing-price">$199<span>/month</span></div>
+            <p class="text-muted">For large organizations</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-lg"></i> Unlimited interviews</li>
+              <li><i class="bi bi-check-lg"></i> Unlimited job roles</li>
+              <li><i class="bi bi-check-lg"></i> 15 team members</li>
+              <li><i class="bi bi-check-lg"></i> White-label option</li>
+              <li><i class="bi bi-check-lg"></i> API access</li>
+              <li><i class="bi bi-check-lg"></i> Dedicated support</li>
+            </ul>
+            <a href="<%= basePath %>/auth/register" class="btn btn-outline-primary w-100">Start Free Trial</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Login Section -->
+  <section class="py-5" id="demo">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="demo-login">
+            <h5><i class="bi bi-lightning-charge me-2"></i>Quick Demo Access</h5>
+            <p class="text-muted small mb-3">Click any user below to login instantly and explore the platform:</p>
+            <div class="demo-user" onclick="demoLogin('superadmin@system.local', 'superadmin123')">
+              <i class="bi bi-shield-fill-check fs-4" style="color: #dc2626;"></i>
+              <div>
+                <div class="demo-user-role">SUPER ADMIN</div>
+                <div class="demo-user-email">superadmin@system.local</div>
+              </div>
+              <i class="bi bi-arrow-right-circle ms-auto"></i>
+            </div>
+            <div class="demo-user" onclick="demoLogin('admin@demo.local', 'admin123')">
+              <i class="bi bi-person-fill-gear fs-4" style="color: #2563eb;"></i>
+              <div>
+                <div class="demo-user-role">COMPANY ADMIN</div>
+                <div class="demo-user-email">admin@demo.local</div>
+              </div>
+              <i class="bi bi-arrow-right-circle ms-auto"></i>
+            </div>
+            <div class="demo-user" onclick="demoLogin('manager@demo.local', 'manager123')">
+              <i class="bi bi-person-fill fs-4" style="color: #0d9488;"></i>
+              <div>
+                <div class="demo-user-role">MANAGER</div>
+                <div class="demo-user-email">manager@demo.local</div>
+              </div>
+              <i class="bi bi-arrow-right-circle ms-auto"></i>
+            </div>
+            <div class="demo-user" onclick="demoLogin('supervisor@demo.local', 'supervisor123')">
+              <i class="bi bi-eye-fill fs-4" style="color: #7c3aed;"></i>
+              <div>
+                <div class="demo-user-role">SUPERVISOR</div>
+                <div class="demo-user-email">supervisor@demo.local</div>
+              </div>
+              <i class="bi bi-arrow-right-circle ms-auto"></i>
+            </div>
+            <div class="demo-user" onclick="demoLogin('candidate@demo.local', 'candidate123')">
+              <i class="bi bi-person-badge-fill fs-4" style="color: #f59e0b;"></i>
+              <div>
+                <div class="demo-user-role">CANDIDATE</div>
+                <div class="demo-user-email">candidate@demo.local</div>
+              </div>
+              <i class="bi bi-arrow-right-circle ms-auto"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to Transform Your Hiring?</h2>
+      <p>Join thousands of companies using AI to find better candidates faster.</p>
+      <a href="<%= basePath %>/auth/register" class="btn btn-light btn-lg">Start Your Free Trial</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="footer-brand">
+            <i class="bi bi-person-badge me-2"></i><%= storeInfo?.businessName || 'RecruitingAI' %>
+          </div>
+          <p><%= storeInfo?.description || 'AI-powered recruiting and interview platform that helps companies hire smarter and faster.' %></p>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 footer-links">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 footer-links">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 footer-links">
+          <h5>Support</h5>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 footer-links">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 <%= storeInfo?.businessName || 'AI Recruiting Assistant' %>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const basePath = '<%= basePath %>';
+
+    // Demo login function
+    async function demoLogin(email, password) {
+      try {
+        const res = await fetch(`${basePath}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: email, password: password }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('authToken', data.data.token);
+          localStorage.setItem('user', JSON.stringify(data.data.user));
+          localStorage.setItem('company', JSON.stringify(data.data.company));
+
+          // Redirect based on role
+          window.location.href = `${basePath}/admin?token=${data.data.token}`;
+        } else {
+          alert('Login failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('An error occurred. Please try again.');
+      }
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

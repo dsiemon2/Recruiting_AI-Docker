@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Gateways - AI Recruiting Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .sidebar { min-height: 100vh; background: #1e3a5f; }
+    .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 0.75rem 1rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .sidebar .nav-link i { margin-right: 0.5rem; }
+    .main-content { background: #f8f9fa; min-height: 100vh; }
+    .nav-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 0.5rem 0; }
+    .nav-section { color: rgba(255,255,255,0.5); font-size: 0.75rem; padding: 0.5rem 1rem; text-transform: uppercase; }
+    .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); }
+    .gateway-card { transition: all 0.2s; }
+    .gateway-card:hover { transform: translateY(-2px); box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1); }
+    .gateway-logo { height: 40px; object-fit: contain; }
+    .form-switch .form-check-input { width: 3em; height: 1.5em; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <%- include('_sidebar', { token, active: 'payment-gateways', branding, basePath, userRole }) %>
+
+      <main class="col-md-10 ms-sm-auto main-content p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2><i class="bi bi-credit-card-2-front text-primary me-2"></i>Payment Gateways</h2>
+            <p class="text-muted mb-0">Configure payment processing providers</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Stripe -->
+          <div class="col-md-6">
+            <div class="card gateway-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-stripe fs-3 text-primary me-2"></i>
+                  <h5 class="mb-0">Stripe</h5>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="stripe[enabled]" id="stripeEnabled"
+                    <%= gateways?.find(g => g.provider === 'stripe')?.isEnabled ? 'checked' : '' %>>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label small">Publishable Key</label>
+                  <input type="text" class="form-control" name="stripe[publishableKey]"
+                    value="<%= gateways?.find(g => g.provider === 'stripe')?.publishableKey || '' %>" placeholder="pk_...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Secret Key</label>
+                  <input type="password" class="form-control" name="stripe[secretKey]"
+                    value="<%= gateways?.find(g => g.provider === 'stripe')?.secretKey || '' %>" placeholder="sk_...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Webhook Secret</label>
+                  <input type="text" class="form-control" name="stripe[webhookSecret]"
+                    value="<%= gateways?.find(g => g.provider === 'stripe')?.webhookSecret || '' %>" placeholder="whsec_...">
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="stripe[testMode]" id="stripeTestMode"
+                    <%= gateways?.find(g => g.provider === 'stripe')?.testMode !== false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="stripeTestMode">Test Mode</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <span class="badge bg-light text-dark"><i class="bi bi-credit-card me-1"></i>Credit Cards</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-bank me-1"></i>ACH</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-apple me-1"></i>Apple Pay</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-google me-1"></i>Google Pay</span>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveGateway('stripe')">
+                  <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="testGateway('stripe')">
+                  <i class="bi bi-lightning"></i> Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PayPal -->
+          <div class="col-md-6">
+            <div class="card gateway-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-paypal fs-3 text-primary me-2"></i>
+                  <h5 class="mb-0">PayPal</h5>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="paypal[enabled]" id="paypalEnabled"
+                    <%= gateways?.find(g => g.provider === 'paypal')?.isEnabled ? 'checked' : '' %>>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label small">Client ID</label>
+                  <input type="text" class="form-control" name="paypal[clientId]"
+                    value="<%= gateways?.find(g => g.provider === 'paypal')?.clientId || '' %>" placeholder="AY...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Client Secret</label>
+                  <input type="password" class="form-control" name="paypal[clientSecret]"
+                    value="<%= gateways?.find(g => g.provider === 'paypal')?.clientSecret || '' %>" placeholder="EG...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Webhook ID</label>
+                  <input type="text" class="form-control" name="paypal[webhookId]"
+                    value="<%= gateways?.find(g => g.provider === 'paypal')?.webhookId || '' %>" placeholder="WH-...">
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="paypal[testMode]" id="paypalTestMode"
+                    <%= gateways?.find(g => g.provider === 'paypal')?.testMode !== false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="paypalTestMode">Sandbox Mode</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <span class="badge bg-light text-dark"><i class="bi bi-paypal me-1"></i>PayPal</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-credit-card me-1"></i>Cards</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-bank me-1"></i>Pay Later</span>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveGateway('paypal')">
+                  <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="testGateway('paypal')">
+                  <i class="bi bi-lightning"></i> Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Braintree -->
+          <div class="col-md-6">
+            <div class="card gateway-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-tree fs-3 text-success me-2"></i>
+                  <h5 class="mb-0">Braintree</h5>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="braintree[enabled]" id="braintreeEnabled"
+                    <%= gateways?.find(g => g.provider === 'braintree')?.isEnabled ? 'checked' : '' %>>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label small">Merchant ID</label>
+                  <input type="text" class="form-control" name="braintree[merchantId]"
+                    value="<%= gateways?.find(g => g.provider === 'braintree')?.merchantId || '' %>">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Public Key</label>
+                  <input type="text" class="form-control" name="braintree[publicKey]"
+                    value="<%= gateways?.find(g => g.provider === 'braintree')?.publicKey || '' %>">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Private Key</label>
+                  <input type="password" class="form-control" name="braintree[privateKey]"
+                    value="<%= gateways?.find(g => g.provider === 'braintree')?.privateKey || '' %>">
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="braintree[testMode]" id="braintreeTestMode"
+                    <%= gateways?.find(g => g.provider === 'braintree')?.testMode !== false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="braintreeTestMode">Sandbox Mode</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <span class="badge bg-light text-dark"><i class="bi bi-credit-card me-1"></i>Cards</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-paypal me-1"></i>PayPal</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-apple me-1"></i>Apple Pay</span>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveGateway('braintree')">
+                  <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="testGateway('braintree')">
+                  <i class="bi bi-lightning"></i> Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Square -->
+          <div class="col-md-6">
+            <div class="card gateway-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-square fs-3 me-2" style="color: #006aff;"></i>
+                  <h5 class="mb-0">Square</h5>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="square[enabled]" id="squareEnabled"
+                    <%= gateways?.find(g => g.provider === 'square')?.isEnabled ? 'checked' : '' %>>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label small">Application ID</label>
+                  <input type="text" class="form-control" name="square[applicationId]"
+                    value="<%= gateways?.find(g => g.provider === 'square')?.applicationId || '' %>" placeholder="sq0idp-...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Access Token</label>
+                  <input type="password" class="form-control" name="square[accessToken]"
+                    value="<%= gateways?.find(g => g.provider === 'square')?.accessToken || '' %>" placeholder="EAAAE...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Location ID</label>
+                  <input type="text" class="form-control" name="square[locationId]"
+                    value="<%= gateways?.find(g => g.provider === 'square')?.locationId || '' %>">
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="square[testMode]" id="squareTestMode"
+                    <%= gateways?.find(g => g.provider === 'square')?.testMode !== false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="squareTestMode">Sandbox Mode</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <span class="badge bg-light text-dark"><i class="bi bi-credit-card me-1"></i>Cards</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-apple me-1"></i>Apple Pay</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-google me-1"></i>Google Pay</span>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveGateway('square')">
+                  <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="testGateway('square')">
+                  <i class="bi bi-lightning"></i> Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Authorize.net -->
+          <div class="col-md-6">
+            <div class="card gateway-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-shield-check fs-3 text-danger me-2"></i>
+                  <h5 class="mb-0">Authorize.net</h5>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="authorize[enabled]" id="authorizeEnabled"
+                    <%= gateways?.find(g => g.provider === 'authorize')?.isEnabled ? 'checked' : '' %>>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label small">API Login ID</label>
+                  <input type="text" class="form-control" name="authorize[apiLoginId]"
+                    value="<%= gateways?.find(g => g.provider === 'authorize')?.apiLoginId || '' %>">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Transaction Key</label>
+                  <input type="password" class="form-control" name="authorize[transactionKey]"
+                    value="<%= gateways?.find(g => g.provider === 'authorize')?.transactionKey || '' %>">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small">Signature Key</label>
+                  <input type="text" class="form-control" name="authorize[signatureKey]"
+                    value="<%= gateways?.find(g => g.provider === 'authorize')?.signatureKey || '' %>">
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="authorize[testMode]" id="authorizeTestMode"
+                    <%= gateways?.find(g => g.provider === 'authorize')?.testMode !== false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="authorizeTestMode">Test Mode</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <span class="badge bg-light text-dark"><i class="bi bi-credit-card me-1"></i>Cards</span>
+                  <span class="badge bg-light text-dark"><i class="bi bi-bank me-1"></i>eCheck</span>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <button class="btn btn-sm btn-outline-primary" onclick="saveGateway('authorize')">
+                  <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="testGateway('authorize')">
+                  <i class="bi bi-lightning"></i> Test
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Webhook URLs Info -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-link-45deg me-2"></i>Webhook URLs</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small">Configure these URLs in your payment gateway dashboards to receive payment events:</p>
+            <table class="table table-sm">
+              <tbody>
+                <tr><td>Stripe</td><td><code><%= basePath %>/webhooks/stripe</code></td></tr>
+                <tr><td>PayPal</td><td><code><%= basePath %>/webhooks/paypal</code></td></tr>
+                <tr><td>Braintree</td><td><code><%= basePath %>/webhooks/braintree</code></td></tr>
+                <tr><td>Square</td><td><code><%= basePath %>/webhooks/square</code></td></tr>
+                <tr><td>Authorize.net</td><td><code><%= basePath %>/webhooks/authorize</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const basePath = '<%= basePath %>';
+    const token = '<%= token %>';
+
+    async function saveGateway(provider) {
+      const data = {
+        isEnabled: document.querySelector(`[name="${provider}[enabled]"]`)?.checked,
+        testMode: document.querySelector(`[name="${provider}[testMode]"]`)?.checked
+      };
+
+      // Get all inputs for this provider
+      document.querySelectorAll(`[name^="${provider}["]`).forEach(input => {
+        const match = input.name.match(/\[(\w+)\]/);
+        if (match && match[1] !== 'enabled' && match[1] !== 'testMode') {
+          data[match[1]] = input.value;
+        }
+      });
+
+      try {
+        const response = await fetch(`${basePath}/admin/payment-gateways/${provider}?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert(`${provider} settings saved successfully!`);
+        } else {
+          alert('Error: ' + result.error);
+        }
+      } catch (error) {
+        alert('Failed to save: ' + error.message);
+      }
+    }
+
+    async function testGateway(provider) {
+      try {
+        const response = await fetch(`${basePath}/admin/payment-gateways/test/${provider}?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert(`${provider} connection successful!${result.testMode ? ' (Test Mode)' : ''}`);
+        } else {
+          alert('Connection failed: ' + result.message);
+        }
+      } catch (error) {
+        alert('Test failed: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Recruiting AI Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <script>window.APP_BASE_PATH = '<%= basePath %>';</script>
+  <style>
+    :root {
+      --sidebar-bg: <%= branding?.primaryColor || '#0d9488' %>;
+      --sidebar-hover: <%= branding?.secondaryColor || '#0f766e' %>;
+    }
+    .sidebar { min-height: 100vh; background: var(--sidebar-bg); }
+    .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 0.75rem 1rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .sidebar .nav-link i { margin-right: 0.5rem; }
+    .main-content { background: #f8f9fa; min-height: 100vh; }
+    .nav-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 0.5rem 0; }
+    .nav-section { color: rgba(255,255,255,0.5); font-size: 0.75rem; padding: 0.5rem 1rem; text-transform: uppercase; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    .color-preview { width: 40px; height: 40px; border-radius: 8px; border: 2px solid #dee2e6; cursor: pointer; }
+    .logo-preview { max-height: 80px; max-width: 200px; object-fit: contain; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <%- include('_sidebar', { token, active: 'settings', basePath, branding }) %>
+
+      <main class="col-md-10 ms-sm-auto main-content p-4">
+        <h2 class="mb-4"><i class="bi bi-gear text-primary me-2"></i>Settings</h2>
+
+        <div class="toast-container"></div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#storeInfo" type="button">
+              <i class="bi bi-building me-1"></i> Company Info
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#brandingTab" type="button">
+              <i class="bi bi-palette me-1"></i> Branding
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#paymentTab" type="button">
+              <i class="bi bi-credit-card me-1"></i> Payment Gateways
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Store Info Tab -->
+          <div class="tab-pane fade show active" id="storeInfo" role="tabpanel">
+            <form id="storeInfoForm">
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="bi bi-building me-2"></i>Company Information</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Company Name</label>
+                      <input type="text" class="form-control" id="businessName" value="<%= storeInfo?.businessName || '' %>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Tagline</label>
+                      <input type="text" class="form-control" id="tagline" value="<%= storeInfo?.tagline || '' %>">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Company Description</label>
+                    <textarea class="form-control" id="description" rows="2"><%= storeInfo?.description || '' %></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" value="<%= storeInfo?.address || '' %>">
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Phone</label>
+                      <input type="tel" class="form-control" id="phone" value="<%= storeInfo?.phone || '' %>">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" id="email" value="<%= storeInfo?.email || '' %>">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Website</label>
+                      <input type="url" class="form-control" id="website" value="<%= storeInfo?.website || '' %>">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Business Hours</label>
+                      <input type="text" class="form-control" id="businessHours" value="<%= storeInfo?.businessHours || '' %>" placeholder="Mon-Fri 9AM-5PM">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Timezone</label>
+                      <select class="form-select" id="timezone">
+                        <option value="America/New_York" <%= storeInfo?.timezone === 'America/New_York' ? 'selected' : '' %>>Eastern Time</option>
+                        <option value="America/Chicago" <%= storeInfo?.timezone === 'America/Chicago' ? 'selected' : '' %>>Central Time</option>
+                        <option value="America/Denver" <%= storeInfo?.timezone === 'America/Denver' ? 'selected' : '' %>>Mountain Time</option>
+                        <option value="America/Los_Angeles" <%= storeInfo?.timezone === 'America/Los_Angeles' ? 'selected' : '' %>>Pacific Time</option>
+                        <option value="UTC" <%= storeInfo?.timezone === 'UTC' ? 'selected' : '' %>>UTC</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Save company information">
+                <i class="bi bi-save me-2"></i>Save Company Info
+              </button>
+            </form>
+          </div>
+
+          <!-- Branding Tab -->
+          <div class="tab-pane fade" id="brandingTab" role="tabpanel">
+            <form id="brandingForm">
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="bi bi-image me-2"></i>Logo & Favicon</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Logo URL</label>
+                      <input type="url" class="form-control" id="logoUrl" value="<%= branding?.logoUrl || '' %>" placeholder="https://example.com/logo.png">
+                      <% if (branding?.logoUrl) { %>
+                        <img src="<%= branding.logoUrl %>" alt="Logo Preview" class="logo-preview mt-2">
+                      <% } %>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Favicon URL</label>
+                      <input type="url" class="form-control" id="faviconUrl" value="<%= branding?.faviconUrl || '' %>" placeholder="https://example.com/favicon.ico">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="bi bi-palette me-2"></i>Colors</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Primary Color</label>
+                      <div class="input-group">
+                        <input type="color" class="form-control form-control-color" id="primaryColorPicker" value="<%= branding?.primaryColor || '#0d9488' %>">
+                        <input type="text" class="form-control" id="primaryColor" value="<%= branding?.primaryColor || '#0d9488' %>">
+                      </div>
+                      <div class="form-text">Used for sidebar, buttons, and accents</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Secondary Color</label>
+                      <div class="input-group">
+                        <input type="color" class="form-control form-control-color" id="secondaryColorPicker" value="<%= branding?.secondaryColor || '#0f766e' %>">
+                        <input type="text" class="form-control" id="secondaryColor" value="<%= branding?.secondaryColor || '#0f766e' %>">
+                      </div>
+                      <div class="form-text">Used for hover states and secondary elements</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Accent Color</label>
+                      <div class="input-group">
+                        <input type="color" class="form-control form-control-color" id="accentColorPicker" value="<%= branding?.accentColor || '#14b8a6' %>">
+                        <input type="text" class="form-control" id="accentColor" value="<%= branding?.accentColor || '#14b8a6' %>">
+                      </div>
+                      <div class="form-text">Used for highlights and call-to-actions</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="bi bi-fonts me-2"></i>Typography</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Heading Font</label>
+                      <select class="form-select" id="headingFont">
+                        <option value="Inter" <%= branding?.headingFont === 'Inter' ? 'selected' : '' %>>Inter</option>
+                        <option value="Roboto" <%= branding?.headingFont === 'Roboto' ? 'selected' : '' %>>Roboto</option>
+                        <option value="Montserrat" <%= branding?.headingFont === 'Montserrat' ? 'selected' : '' %>>Montserrat</option>
+                        <option value="Open Sans" <%= branding?.headingFont === 'Open Sans' ? 'selected' : '' %>>Open Sans</option>
+                        <option value="Poppins" <%= branding?.headingFont === 'Poppins' ? 'selected' : '' %>>Poppins</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Body Font</label>
+                      <select class="form-select" id="bodyFont">
+                        <option value="Inter" <%= branding?.bodyFont === 'Inter' ? 'selected' : '' %>>Inter</option>
+                        <option value="Roboto" <%= branding?.bodyFont === 'Roboto' ? 'selected' : '' %>>Roboto</option>
+                        <option value="Open Sans" <%= branding?.bodyFont === 'Open Sans' ? 'selected' : '' %>>Open Sans</option>
+                        <option value="Lato" <%= branding?.bodyFont === 'Lato' ? 'selected' : '' %>>Lato</option>
+                        <option value="Source Sans Pro" <%= branding?.bodyFont === 'Source Sans Pro' ? 'selected' : '' %>>Source Sans Pro</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Save branding settings">
+                <i class="bi bi-save me-2"></i>Save Branding
+              </button>
+            </form>
+          </div>
+
+          <!-- Payment Gateways Tab -->
+          <div class="tab-pane fade" id="paymentTab" role="tabpanel">
+            <div class="card mb-4">
+              <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Payment Gateways</h5>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="paymentsEnabled" <%= paymentSettings?.enabled ? 'checked' : '' %>>
+                  <label class="form-check-label text-white" for="paymentsEnabled">Enable Payments</label>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Payment processing is optional for this recruiting application.
+                  Enable this if you want to accept payments for premium services.
+                </div>
+
+                <!-- Stripe -->
+                <div class="card mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-stripe me-2"></i>Stripe</span>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="stripeEnabled" <%= paymentSettings?.stripeEnabled ? 'checked' : '' %>>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Publishable Key</label>
+                        <input type="text" class="form-control" id="stripePublishableKey" placeholder="pk_test_..." value="<%= paymentSettings?.stripePublishableKey || '' %>">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Secret Key</label>
+                        <input type="password" class="form-control" id="stripeSecretKey" placeholder="sk_test_...">
+                      </div>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="stripeTestMode" <%= paymentSettings?.stripeTestMode !== false ? 'checked' : '' %>>
+                      <label class="form-check-label" for="stripeTestMode">Test Mode</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PayPal -->
+                <div class="card mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-paypal me-2"></i>PayPal</span>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="paypalEnabled" <%= paymentSettings?.paypalEnabled ? 'checked' : '' %>>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Client ID</label>
+                        <input type="text" class="form-control" id="paypalClientId" placeholder="Client ID" value="<%= paymentSettings?.paypalClientId || '' %>">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Secret</label>
+                        <input type="password" class="form-control" id="paypalSecret" placeholder="Secret">
+                      </div>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="paypalSandbox" <%= paymentSettings?.paypalSandbox !== false ? 'checked' : '' %>>
+                      <label class="form-check-label" for="paypalSandbox">Sandbox Mode</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Square -->
+                <div class="card mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-square me-2"></i>Square</span>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="squareEnabled" <%= paymentSettings?.squareEnabled ? 'checked' : '' %>>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Application ID</label>
+                        <input type="text" class="form-control" id="squareAppId" placeholder="sq0idp-..." value="<%= paymentSettings?.squareAppId || '' %>">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Access Token</label>
+                        <input type="password" class="form-control" id="squareAccessToken" placeholder="Access Token">
+                      </div>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="squareSandbox" <%= paymentSettings?.squareSandbox !== false ? 'checked' : '' %>>
+                      <label class="form-check-label" for="squareSandbox">Sandbox Mode</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const token = '<%= token %>';
+    const basePath = window.APP_BASE_PATH || '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+
+      // Sync color pickers with text inputs
+      ['primary', 'secondary', 'accent'].forEach(type => {
+        const picker = document.getElementById(`${type}ColorPicker`);
+        const input = document.getElementById(`${type}Color`);
+        picker?.addEventListener('input', () => input.value = picker.value);
+        input?.addEventListener('input', () => picker.value = input.value);
+      });
+    });
+
+    function showToast(message, type = 'success') {
+      const container = document.querySelector('.toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast show align-items-center text-bg-${type} border-0`;
+      toast.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Store Info Form
+    document.getElementById('storeInfoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch(`${basePath}/admin/settings/store-info?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName: document.getElementById('businessName').value,
+            tagline: document.getElementById('tagline').value,
+            description: document.getElementById('description').value,
+            address: document.getElementById('address').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            website: document.getElementById('website').value,
+            businessHours: document.getElementById('businessHours').value,
+            timezone: document.getElementById('timezone').value
+          })
+        });
+        if (res.ok) showToast('Company info saved!');
+        else showToast('Failed to save', 'danger');
+      } catch (err) {
+        showToast('Error saving', 'danger');
+      }
+    });
+
+    // Branding Form
+    document.getElementById('brandingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch(`${basePath}/admin/settings/branding?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            logoUrl: document.getElementById('logoUrl').value,
+            faviconUrl: document.getElementById('faviconUrl').value,
+            primaryColor: document.getElementById('primaryColor').value,
+            secondaryColor: document.getElementById('secondaryColor').value,
+            accentColor: document.getElementById('accentColor').value,
+            headingFont: document.getElementById('headingFont').value,
+            bodyFont: document.getElementById('bodyFont').value
+          })
+        });
+        if (res.ok) {
+          showToast('Branding saved! Refreshing...');
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast('Failed to save', 'danger');
+        }
+      } catch (err) {
+        showToast('Error saving', 'danger');
+      }
+    });
+  </script>
+</body>
+</html>

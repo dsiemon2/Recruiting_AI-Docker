@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Recruiting Assistant - Streamline Your Hiring Process</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+      --primary-dark: #0f766e;
+      --secondary-teal: #14b8a6;
+      --accent-cyan: #06b6d4;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Navigation */
+    .navbar {
+      background: white !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: var(--primary-dark) !important;
+    }
+    .navbar-brand i {
+      color: var(--secondary-teal);
+    }
+    .btn-login {
+      background: transparent;
+      border: 2px solid var(--secondary-teal);
+      color: var(--secondary-teal);
+    }
+    .btn-login:hover {
+      background: var(--secondary-teal);
+      color: white;
+    }
+    .btn-signup {
+      background: var(--primary-gradient);
+      border: none;
+      color: white;
+    }
+    .btn-signup:hover {
+      background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+      color: white;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero-subtitle {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+    .hero-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .hero-feature {
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    .hero-feature i {
+      margin-right: 5px;
+    }
+    .hero-cta .btn {
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      border-radius: 25px;
+    }
+    .btn-hero-primary {
+      background: white;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .btn-hero-primary:hover {
+      background: #f8f9fa;
+      color: var(--secondary-teal);
+    }
+    .btn-hero-secondary {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+    .btn-hero-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    .hero-image {
+      text-align: center;
+    }
+    .hero-image i {
+      font-size: 15rem;
+      opacity: 0.3;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 80px 0;
+    }
+    .feature-card {
+      text-align: center;
+      padding: 30px;
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: white;
+      height: 100%;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2rem;
+      color: white;
+    }
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background: #f8f9fa;
+      padding: 60px 0;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .stat-label {
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
+
+    /* Demo Section */
+    .demo-section {
+      padding: 60px 0;
+      background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+    }
+    .demo-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      height: 100%;
+    }
+    .demo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .demo-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--primary-gradient);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 15px;
+    }
+    .demo-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .demo-role {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 10px;
+    }
+    .demo-features {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-bottom: 15px;
+    }
+    .btn-demo {
+      background: var(--primary-gradient);
+      border: none;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    .btn-demo:hover {
+      background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+      color: white;
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      padding: 80px 0;
+      background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+    }
+    .pricing-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    .pricing-card.popular {
+      border: 3px solid var(--secondary-teal);
+    }
+    .pricing-card.popular::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: 15px;
+      right: -35px;
+      background: var(--secondary-teal);
+      color: white;
+      padding: 5px 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      transform: rotate(45deg);
+    }
+    .pricing-tier {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+    .pricing-price {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .pricing-price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #6c757d;
+    }
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin: 25px 0;
+    }
+    .pricing-features li {
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f1f1;
+      display: flex;
+      align-items: center;
+    }
+    .pricing-features li:last-child {
+      border-bottom: none;
+    }
+    .pricing-features li i {
+      color: #22c55e;
+      margin-right: 10px;
+    }
+    .pricing-features li.disabled {
+      color: #adb5bd;
+    }
+    .pricing-features li.disabled i {
+      color: #adb5bd;
+    }
+    .btn-pricing {
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      width: 100%;
+    }
+    .btn-pricing-primary {
+      background: var(--primary-gradient);
+      border: none;
+      color: white;
+    }
+    .btn-pricing-primary:hover {
+      background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+      color: white;
+    }
+    .btn-pricing-outline {
+      background: transparent;
+      border: 2px solid var(--secondary-teal);
+      color: var(--secondary-teal);
+    }
+    .btn-pricing-outline:hover {
+      background: var(--secondary-teal);
+      color: white;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: var(--primary-gradient);
+      padding: 60px 0;
+      color: white;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    .cta-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+    .cta-section .btn {
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      background: white;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .cta-section .btn:hover {
+      background: #f8f9fa;
+      color: var(--secondary-teal);
+    }
+
+    /* Footer */
+    .footer {
+      background: #1e293b;
+      color: white;
+      padding: 40px 0 20px;
+    }
+    .footer h5 {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .footer a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .footer a:hover {
+      color: white;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      margin-top: 30px;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="<%= basePath %>/">
+        <i class="bi bi-people-fill me-2"></i>AI Recruiting
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#pricing">Pricing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#demo">Demo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+        </ul>
+        <div class="d-flex gap-2">
+          <a href="<%= basePath %>/login" class="btn btn-login">Sign In</a>
+          <a href="<%= basePath %>/register" class="btn btn-signup">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h1 class="hero-title">Hire Smarter with AI-Powered Interviews</h1>
+          <p class="hero-subtitle">Streamline your recruiting process with intelligent screening, structured interviews, and data-driven candidate insights</p>
+          <div class="hero-features">
+            <span class="hero-feature"><i class="bi bi-robot"></i> AI Interviewer</span>
+            <span class="hero-feature"><i class="bi bi-calendar-check"></i> Auto Scheduling</span>
+            <span class="hero-feature"><i class="bi bi-graph-up"></i> Candidate Scoring</span>
+            <span class="hero-feature"><i class="bi bi-translate"></i> 24 Languages</span>
+            <span class="hero-feature"><i class="bi bi-shield-check"></i> Bias-Free</span>
+          </div>
+          <div class="hero-cta">
+            <a href="<%= basePath %>/register" class="btn btn-hero-primary me-3">Start Free Trial</a>
+            <a href="#pricing" class="btn btn-hero-secondary">See Pricing</a>
+          </div>
+        </div>
+        <div class="col-lg-5 hero-image d-none d-lg-block">
+          <i class="bi bi-person-video3"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">85%</div>
+            <div class="stat-label">Time Saved</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Interviews Conducted</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Companies Trust Us</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">4.9</div>
+            <div class="stat-label">User Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Why Choose AI Recruiting?</h2>
+        <p class="text-muted">Transform your hiring process with cutting-edge AI technology</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-robot"></i>
+            </div>
+            <h4 class="feature-title">AI-Powered Interviews</h4>
+            <p class="text-muted">Conduct structured interviews 24/7 with our intelligent AI interviewer. Consistent, fair, and thorough every time.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-clipboard-data"></i>
+            </div>
+            <h4 class="feature-title">Smart Candidate Scoring</h4>
+            <p class="text-muted">Get objective, data-driven scores for every candidate based on skills, experience, and cultural fit.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-calendar2-week"></i>
+            </div>
+            <h4 class="feature-title">Automated Scheduling</h4>
+            <p class="text-muted">Eliminate back-and-forth emails. Candidates self-schedule interviews at times that work for everyone.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-briefcase"></i>
+            </div>
+            <h4 class="feature-title">Custom Job Roles</h4>
+            <p class="text-muted">Create tailored interview templates for any position with customizable questions and evaluation criteria.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <h4 class="feature-title">Analytics Dashboard</h4>
+            <p class="text-muted">Track hiring metrics, identify bottlenecks, and optimize your recruitment funnel with real-time insights.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-translate"></i>
+            </div>
+            <h4 class="feature-title">24 Languages</h4>
+            <p class="text-muted">Interview candidates in their preferred language. Support for 24 languages ensures global reach.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="demo-section" id="demo">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Try It Now</h2>
+        <p class="text-muted">Experience the platform with our demo accounts - no signup required</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-lg-2 col-md-6">
+          <div class="demo-card">
+            <div class="demo-icon">
+              <i class="bi bi-shield-lock"></i>
+            </div>
+            <h5 class="demo-title">Super Admin</h5>
+            <p class="demo-role">Full System Access</p>
+            <p class="demo-features">Manage companies, system settings, all features</p>
+            <button class="btn btn-demo" onclick="demoLogin('superadmin@system.local', 'superadmin123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <div class="demo-card">
+            <div class="demo-icon">
+              <i class="bi bi-building"></i>
+            </div>
+            <h5 class="demo-title">Company Admin</h5>
+            <p class="demo-role">Organization Management</p>
+            <p class="demo-features">Manage users, job roles, company settings</p>
+            <button class="btn btn-demo" onclick="demoLogin('admin@demo.local', 'admin123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <div class="demo-card">
+            <div class="demo-icon">
+              <i class="bi bi-person-badge"></i>
+            </div>
+            <h5 class="demo-title">Manager</h5>
+            <p class="demo-role">Hiring Manager</p>
+            <p class="demo-features">Schedule interviews, review candidates, analytics</p>
+            <button class="btn btn-demo" onclick="demoLogin('manager@demo.local', 'manager123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <div class="demo-card">
+            <div class="demo-icon">
+              <i class="bi bi-eye"></i>
+            </div>
+            <h5 class="demo-title">Supervisor</h5>
+            <p class="demo-role">View Only</p>
+            <p class="demo-features">View sessions, analytics, candidate progress</p>
+            <button class="btn btn-demo" onclick="demoLogin('supervisor@demo.local', 'supervisor123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <div class="demo-card">
+            <div class="demo-icon">
+              <i class="bi bi-person"></i>
+            </div>
+            <h5 class="demo-title">Candidate</h5>
+            <p class="demo-role">Job Applicant</p>
+            <p class="demo-features">View scheduled interviews, take AI interview</p>
+            <button class="btn btn-demo" onclick="demoLogin('candidate@demo.local', 'candidate123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Try Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Simple, Transparent Pricing</h2>
+        <p class="text-muted">Start free, scale as you grow. Cancel anytime.</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <!-- Free Trial -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card">
+            <div class="pricing-tier text-muted">Free Trial</div>
+            <div class="pricing-price">$0<span>/mo</span></div>
+            <p class="text-muted">Perfect for trying it out</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-circle-fill"></i> 5 Interviews/month</li>
+              <li><i class="bi bi-check-circle-fill"></i> 2 Job Roles</li>
+              <li><i class="bi bi-check-circle-fill"></i> Basic AI Interviewer</li>
+              <li><i class="bi bi-check-circle-fill"></i> Email Notifications</li>
+              <li class="disabled"><i class="bi bi-x-circle"></i> Custom Questions</li>
+              <li class="disabled"><i class="bi bi-x-circle"></i> Analytics</li>
+            </ul>
+            <a href="<%= basePath %>/register?plan=free" class="btn btn-pricing btn-pricing-outline">Start Free</a>
+          </div>
+        </div>
+        <!-- Non Profit -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card">
+            <div class="pricing-tier" style="color: #22c55e;">Non-Profit</div>
+            <div class="pricing-price">$9.99<span>/mo</span></div>
+            <p class="text-muted">For charitable organizations</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-circle-fill"></i> 25 Interviews/month</li>
+              <li><i class="bi bi-check-circle-fill"></i> 5 Job Roles</li>
+              <li><i class="bi bi-check-circle-fill"></i> Smart AI Interviewer</li>
+              <li><i class="bi bi-check-circle-fill"></i> Custom Questions</li>
+              <li><i class="bi bi-check-circle-fill"></i> Basic Analytics</li>
+              <li><i class="bi bi-check-circle-fill"></i> Email Support</li>
+            </ul>
+            <a href="<%= basePath %>/register?plan=nonprofit" class="btn btn-pricing btn-pricing-outline">Get Started</a>
+          </div>
+        </div>
+        <!-- Professional -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card popular">
+            <div class="pricing-tier" style="color: var(--secondary-teal);">Professional</div>
+            <div class="pricing-price">$29.99<span>/mo</span></div>
+            <p class="text-muted">For growing companies</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-circle-fill"></i> 100 Interviews/month</li>
+              <li><i class="bi bi-check-circle-fill"></i> Unlimited Job Roles</li>
+              <li><i class="bi bi-check-circle-fill"></i> Advanced AI + Scoring</li>
+              <li><i class="bi bi-check-circle-fill"></i> MS Teams Integration</li>
+              <li><i class="bi bi-check-circle-fill"></i> Full Analytics Suite</li>
+              <li><i class="bi bi-check-circle-fill"></i> Priority Support</li>
+            </ul>
+            <a href="<%= basePath %>/register?plan=professional" class="btn btn-pricing btn-pricing-primary">Start Free Trial</a>
+          </div>
+        </div>
+        <!-- Premium -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card">
+            <div class="pricing-tier" style="color: #8b5cf6;">Premium</div>
+            <div class="pricing-price">$59.00<span>/mo</span></div>
+            <p class="text-muted">For enterprises</p>
+            <ul class="pricing-features">
+              <li><i class="bi bi-check-circle-fill"></i> Unlimited Interviews</li>
+              <li><i class="bi bi-check-circle-fill"></i> Unlimited Everything</li>
+              <li><i class="bi bi-check-circle-fill"></i> White-Label Option</li>
+              <li><i class="bi bi-check-circle-fill"></i> API Access</li>
+              <li><i class="bi bi-check-circle-fill"></i> Custom Integrations</li>
+              <li><i class="bi bi-check-circle-fill"></i> Dedicated Support</li>
+            </ul>
+            <a href="<%= basePath %>/register?plan=premium" class="btn btn-pricing btn-pricing-outline">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-5">
+        <p class="text-muted"><i class="bi bi-shield-check me-2"></i>14-day free trial on all paid plans. No credit card required to start.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="py-5" id="about">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-4">Built for Modern Recruiting Teams</h2>
+          <p class="lead text-muted">Hiring shouldn't be a bottleneck. Our AI-powered platform helps you find the best candidates faster, with less bias and more consistency.</p>
+          <p class="text-muted">From startups to enterprises, teams use AI Recruiting to streamline their hiring process, reduce time-to-hire, and make data-driven decisions. Our intelligent interviewer conducts structured interviews 24/7, so you never miss a great candidate.</p>
+          <div class="d-flex gap-4 mt-4">
+            <div class="text-center">
+              <h3 class="fw-bold text-primary mb-0">85%</h3>
+              <small class="text-muted">Faster Screening</small>
+            </div>
+            <div class="text-center">
+              <h3 class="fw-bold text-primary mb-0">3x</h3>
+              <small class="text-muted">More Candidates</small>
+            </div>
+            <div class="text-center">
+              <h3 class="fw-bold text-primary mb-0">50%</h3>
+              <small class="text-muted">Cost Reduction</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <div class="p-5 bg-light rounded-4">
+            <i class="bi bi-people-fill" style="font-size: 8rem; opacity: 0.3; color: var(--primary-dark);"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Ready to Transform Your Hiring?</h2>
+      <p>Start your free trial today - no credit card required</p>
+      <a href="<%= basePath %>/register" class="btn">Get Started Free <i class="bi bi-arrow-right ms-2"></i></a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5><i class="bi bi-people-fill text-info me-2"></i>AI Recruiting</h5>
+          <p class="text-muted">Hire Smarter, Faster</p>
+          <p class="text-muted small">The AI-powered recruiting platform that transforms how you find and hire talent.</p>
+        </div>
+        <div class="col-md-2">
+          <h5>Product</h5>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#demo">Demo</a>
+        </div>
+        <div class="col-md-2">
+          <h5>Support</h5>
+          <a href="#">Help Center</a>
+          <a href="#">Contact Us</a>
+          <a href="#">FAQ</a>
+        </div>
+        <div class="col-md-2">
+          <h5>Legal</h5>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+        <div class="col-md-2">
+          <h5>Connect</h5>
+          <a href="#"><i class="bi bi-linkedin me-2"></i>LinkedIn</a>
+          <a href="#"><i class="bi bi-twitter me-2"></i>Twitter</a>
+          <a href="#"><i class="bi bi-github me-2"></i>GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 AI Recruiting Assistant. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const basePath = '<%= basePath %>';
+
+    // Demo login function
+    async function demoLogin(email, password) {
+      try {
+        const res = await fetch(`${basePath}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: email, password: password }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('authToken', data.data.token);
+          localStorage.setItem('user', JSON.stringify(data.data.user));
+          if (data.data.company) {
+            localStorage.setItem('company', JSON.stringify(data.data.company));
+          }
+          window.location.href = `${basePath}/admin?token=${data.data.token}`;
+        } else {
+          alert('Demo login failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        alert('An error occurred. Please try again.');
+      }
+    }
+  </script>
+</body>
+</html>

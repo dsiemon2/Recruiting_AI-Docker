@@ -1,0 +1,252 @@
+<nav class="col-md-2 d-none d-md-block sidebar p-0" id="adminSidebar" style="background: <%= branding?.primaryColor || '#0d9488' %>">
+  <div class="p-3 text-white">
+    <h5><i class="bi bi-people-fill"></i> AI Recruiting</h5>
+    <small>Interview Assistant</small>
+    <% if (typeof userRole !== 'undefined' && userRole) { %>
+    <div class="mt-2">
+      <span class="badge bg-light text-dark"><%= userRole.replace('_', ' ') %></span>
+    </div>
+    <% } %>
+  </div>
+
+  <%
+    // Define role hierarchy for permission checks
+    const roleHierarchy = {
+      'SUPER_ADMIN': 5,
+      'COMPANY_ADMIN': 4,
+      'MANAGER': 3,
+      'SUPERVISOR': 2,
+      'CANDIDATE': 1
+    };
+
+    const currentRole = typeof userRole !== 'undefined' ? userRole : 'CANDIDATE';
+    const currentLevel = roleHierarchy[currentRole] || 1;
+
+    // Helper function to check if user has minimum role level
+    const hasRole = (minRole) => currentLevel >= (roleHierarchy[minRole] || 1);
+
+    // Check if Super Admin
+    const isSuperAdmin = currentRole === 'SUPER_ADMIN';
+    const isCompanyAdmin = currentRole === 'COMPANY_ADMIN' || isSuperAdmin;
+    const isManager = hasRole('MANAGER');
+    const isSupervisor = hasRole('SUPERVISOR');
+  %>
+
+  <ul class="nav flex-column">
+    <!-- Dashboard - All roles can see -->
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'dashboard' ? 'active' : '' %>" href="<%= basePath %>/admin?token=<%= token %>">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+    </li>
+
+    <!-- Analytics - SUPERVISOR and above -->
+    <% if (isSupervisor) { %>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'analytics' ? 'active' : '' %>" href="<%= basePath %>/admin/analytics?token=<%= token %>">
+        <i class="bi bi-graph-up"></i> Analytics
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Interviews - All roles can see (CANDIDATE sees only their own) -->
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'interviews' ? 'active' : '' %>" href="<%= basePath %>/admin/interviews?token=<%= token %>">
+        <i class="bi bi-calendar-event"></i> <%= currentRole === 'CANDIDATE' ? 'My Interviews' : 'Interviews' %>
+      </a>
+    </li>
+
+    <!-- Interview Setup - MANAGER and above -->
+    <% if (isManager) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Interview Setup</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'job-roles' ? 'active' : '' %>" href="<%= basePath %>/admin/job-roles?token=<%= token %>">
+        <i class="bi bi-briefcase"></i> Job Roles
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'questions' ? 'active' : '' %>" href="<%= basePath %>/admin/questions?token=<%= token %>">
+        <i class="bi bi-chat-square-text"></i> Questions
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Candidates - SUPERVISOR and above -->
+    <% if (isSupervisor) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Candidates</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'candidates' ? 'active' : '' %>" href="<%= basePath %>/admin/candidates?token=<%= token %>">
+        <i class="bi bi-person-vcard"></i> All Candidates
+      </a>
+    </li>
+    <% } %>
+
+    <!-- AI Configuration - SUPER_ADMIN only -->
+    <% if (isSuperAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">AI Configuration</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'ai-config' ? 'active' : '' %>" href="<%= basePath %>/admin/ai-config?token=<%= token %>">
+        <i class="bi bi-sliders"></i> AI Config
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'ai-agents' ? 'active' : '' %>" href="<%= basePath %>/admin/ai-agents?token=<%= token %>">
+        <i class="bi bi-robot"></i> AI Agents
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'ai-tools' ? 'active' : '' %>" href="<%= basePath %>/admin/ai-tools?token=<%= token %>">
+        <i class="bi bi-tools"></i> AI Tools
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'knowledge-base' ? 'active' : '' %>" href="<%= basePath %>/admin/knowledge-base?token=<%= token %>">
+        <i class="bi bi-book"></i> Knowledge Base
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'voices' ? 'active' : '' %>" href="<%= basePath %>/admin/voices?token=<%= token %>">
+        <i class="bi bi-volume-up"></i> Voices & Mode
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'greeting' ? 'active' : '' %>" href="<%= basePath %>/admin/greeting?token=<%= token %>">
+        <i class="bi bi-chat-quote"></i> Greeting
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Automation - SUPER_ADMIN only -->
+    <% if (isSuperAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Automation</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'logic-rules' ? 'active' : '' %>" href="<%= basePath %>/admin/logic-rules?token=<%= token %>">
+        <i class="bi bi-diagram-3"></i> Logic Rules
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'functions' ? 'active' : '' %>" href="<%= basePath %>/admin/functions?token=<%= token %>">
+        <i class="bi bi-code-slash"></i> Functions
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Communication - SUPER_ADMIN only -->
+    <% if (isSuperAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Communication</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'sms-settings' ? 'active' : '' %>" href="<%= basePath %>/admin/sms-settings?token=<%= token %>">
+        <i class="bi bi-chat-dots"></i> SMS Settings
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'webhooks' ? 'active' : '' %>" href="<%= basePath %>/admin/webhooks?token=<%= token %>">
+        <i class="bi bi-link-45deg"></i> WebHooks
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Integrations - COMPANY_ADMIN and above -->
+    <% if (isCompanyAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Integrations</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'teams' ? 'active' : '' %>" href="<%= basePath %>/admin/teams?token=<%= token %>">
+        <i class="bi bi-microsoft-teams"></i> MS Teams
+      </a>
+    </li>
+    <% } %>
+
+    <!-- User Management - COMPANY_ADMIN and above -->
+    <% if (isCompanyAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">User Management</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'users' ? 'active' : '' %>" href="<%= basePath %>/admin/users?token=<%= token %>">
+        <i class="bi bi-person-badge"></i> Users
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Company Management - SUPER_ADMIN only -->
+    <% if (isSuperAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Company Management</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'companies' ? 'active' : '' %>" href="<%= basePath %>/admin/companies?token=<%= token %>">
+        <i class="bi bi-building"></i> Companies
+      </a>
+    </li>
+    <% } %>
+
+    <!-- Billing - COMPANY_ADMIN and above -->
+    <% if (isCompanyAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">Billing</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'payment-gateways' ? 'active' : '' %>" href="<%= basePath %>/admin/payment-gateways?token=<%= token %>">
+        <i class="bi bi-credit-card-2-front"></i> Payment Gateways
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'transactions' ? 'active' : '' %>" href="<%= basePath %>/admin/transactions?token=<%= token %>">
+        <i class="bi bi-receipt"></i> Transactions
+      </a>
+    </li>
+    <% } %>
+
+    <!-- System Settings - SUPER_ADMIN only -->
+    <% if (isSuperAdmin) { %>
+    <div class="nav-divider"></div>
+    <div class="nav-section">System</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'settings' ? 'active' : '' %>" href="<%= basePath %>/admin/settings?token=<%= token %>">
+        <i class="bi bi-gear"></i> Settings
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'features' ? 'active' : '' %>" href="<%= basePath %>/admin/features?token=<%= token %>">
+        <i class="bi bi-toggles"></i> Features
+      </a>
+    </li>
+    <% } %>
+
+  </ul>
+</nav>
+
+<script>
+  // Sidebar scroll position persistence
+  (function() {
+    const sidebar = document.getElementById('adminSidebar');
+    if (!sidebar) return;
+
+    const SCROLL_KEY = 'adminSidebarScroll';
+
+    // Restore scroll position on page load
+    const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+    if (savedScroll) {
+      sidebar.scrollTop = parseInt(savedScroll, 10);
+    }
+
+    // Save scroll position before navigating
+    sidebar.querySelectorAll('a.nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        sessionStorage.setItem(SCROLL_KEY, sidebar.scrollTop);
+      });
+    });
+
+    // Also save on scroll (debounced)
+    let scrollTimeout;
+    sidebar.addEventListener('scroll', function() {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        sessionStorage.setItem(SCROLL_KEY, sidebar.scrollTop);
+      }, 100);
+    });
+  })();
+</script>
