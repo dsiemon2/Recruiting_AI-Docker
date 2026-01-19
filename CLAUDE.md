@@ -36,7 +36,8 @@ Quick login available via the login page:
 - **Integrations**: COMPANY_ADMIN and above
 - **User Management**: COMPANY_ADMIN and above
 - **Company Management**: SUPER_ADMIN only
-- **Billing**: COMPANY_ADMIN and above
+- **Billing**: COMPANY_ADMIN and above (Trial Codes, Payment Gateways, Transactions)
+- **Account**: All roles (Account Settings, My Subscription, Pricing Plans)
 - **System Settings**: SUPER_ADMIN only
 
 ### Testing Different Roles
@@ -169,6 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
 - `views/` - EJS templates
 - `views/admin/` - Admin panel pages
 - `views/admin/_sidebar.ejs` - Role-aware sidebar navigation
+- `views/admin/trial-codes.ejs` - Trial codes management
+- `views/admin/my-subscription.ejs` - User subscription view
+- `views/admin/pricing.ejs` - Pricing plans page
+- `views/admin/account.ejs` - Account settings
 - `views/auth/` - Authentication pages
 - `views/landing.ejs` - Public landing page
 - `prisma/` - Database schema and migrations

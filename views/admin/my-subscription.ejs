@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Subscription - AI Recruiting Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <script>window.APP_BASE_PATH = '<%= basePath %>';</script>
+  <style>
+    :root {
+      --sidebar-bg: <%= branding?.primaryColor || '#0d9488' %>;
+      --sidebar-hover: <%= branding?.secondaryColor || '#0f766e' %>;
+      --primary-color: <%= branding?.primaryColor || '#0d9488' %>;
+    }
+    .sidebar {
+      background: var(--sidebar-bg);
+      height: calc(100vh - 56px);
+      position: sticky;
+      top: 56px;
+      overflow-y: scroll !important;
+    }
+    .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 0.75rem 1rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .sidebar .nav-link i { margin-right: 0.5rem; }
+    .main-content { background: #f8f9fa; min-height: 100vh; }
+    .nav-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 0.5rem 0; }
+    .nav-section { color: rgba(255,255,255,0.5); font-size: 0.75rem; padding: 0.5rem 1rem; text-transform: uppercase; }
+    .subscription-card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .plan-badge { font-size: 0.875rem; padding: 0.5rem 1rem; border-radius: 20px; }
+    .plan-badge.active { background: #d4edda; color: #155724; }
+    .plan-badge.trialing { background: #fff3cd; color: #856404; }
+    .plan-badge.canceled { background: #f8d7da; color: #721c24; }
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li { padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list i { margin-right: 0.5rem; color: var(--primary-color); }
+  </style>
+</head>
+<body>
+  <%- include('_topnav', { token, basePath, branding, userRole, userName }) %>
+  <div class="container-fluid">
+    <div class="row">
+      <%- include('_sidebar', { token, active: 'my-subscription', basePath, branding, userRole }) %>
+
+      <main class="col-md-10 ms-sm-auto main-content p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2><i class="bi bi-person-badge me-2" style="color: var(--primary-color);"></i>My Subscription</h2>
+          <a href="<%= basePath %>/admin/pricing?token=<%= token %>" class="btn btn-outline-primary">
+            <i class="bi bi-tags me-1"></i> View All Plans
+          </a>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="subscription-card mb-4">
+              <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                  <h4 id="planName">Loading...</h4>
+                  <p class="text-muted mb-0" id="planDescription">-</p>
+                </div>
+                <span class="plan-badge" id="statusBadge">-</span>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <h6 class="text-muted">Monthly Price</h6>
+                  <h3 id="planPrice">-</h3>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="text-muted">Billing Period</h6>
+                  <p id="billingPeriod">-</p>
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <h6 class="text-muted">Current Period Start</h6>
+                  <p id="periodStart">-</p>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="text-muted">Current Period End</h6>
+                  <p id="periodEnd">-</p>
+                </div>
+              </div>
+
+              <div id="trialInfo" class="alert alert-warning d-none">
+                <i class="bi bi-clock me-2"></i>
+                <span id="trialMessage">Trial ends on -</span>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-danger" id="cancelBtn" onclick="cancelSubscription()">
+                  <i class="bi bi-x-circle me-1"></i> Cancel Subscription
+                </button>
+                <button class="btn btn-success d-none" id="resumeBtn" onclick="resumeSubscription()">
+                  <i class="bi bi-arrow-repeat me-1"></i> Resume Subscription
+                </button>
+              </div>
+            </div>
+
+            <div class="subscription-card">
+              <h5 class="mb-3"><i class="bi bi-list-check me-2" style="color: var(--primary-color);"></i>Plan Features</h5>
+              <ul class="feature-list" id="featuresList">
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="subscription-card">
+              <h5 class="mb-3"><i class="bi bi-question-circle me-2" style="color: var(--primary-color);"></i>Need Help?</h5>
+              <p class="text-muted">Have questions about your subscription? Contact our support team.</p>
+              <a href="mailto:support@airecruiting.com" class="btn btn-outline-primary w-100">
+                <i class="bi bi-envelope me-1"></i> Contact Support
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const token = '<%= token %>';
+    const basePath = window.APP_BASE_PATH || '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSubscription();
+    });
+
+    async function loadSubscription() {
+      try {
+        const res = await fetch(`${basePath}/admin/api/my-subscription?token=${token}`);
+        const data = await res.json();
+        if (data.success && data.subscription) {
+          renderSubscription(data.subscription);
+        } else {
+          renderNoSubscription();
+        }
+      } catch (err) {
+        console.error('Error loading subscription:', err);
+      }
+    }
+
+    function renderSubscription(sub) {
+      document.getElementById('planName').textContent = sub.plan?.name || 'Free Plan';
+      document.getElementById('planDescription').textContent = sub.plan?.description || 'Basic features included';
+      document.getElementById('planPrice').textContent = sub.plan?.price ? `$${sub.plan.price.toFixed(2)}/mo` : 'Free';
+      document.getElementById('billingPeriod').textContent = sub.plan?.billingPeriod || 'monthly';
+
+      const statusBadge = document.getElementById('statusBadge');
+      statusBadge.textContent = sub.status;
+      statusBadge.className = 'plan-badge ' + sub.status.toLowerCase();
+
+      document.getElementById('periodStart').textContent = sub.currentPeriodStart ? new Date(sub.currentPeriodStart).toLocaleDateString() : '-';
+      document.getElementById('periodEnd').textContent = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '-';
+
+      if (sub.status === 'trialing' && sub.trialEndsAt) {
+        document.getElementById('trialInfo').classList.remove('d-none');
+        document.getElementById('trialMessage').textContent = 'Trial ends on ' + new Date(sub.trialEndsAt).toLocaleDateString();
+      }
+
+      if (sub.status === 'canceled') {
+        document.getElementById('cancelBtn').classList.add('d-none');
+        document.getElementById('resumeBtn').classList.remove('d-none');
+      }
+
+      // Render features
+      const features = sub.plan?.features ? (typeof sub.plan.features === 'string' ? sub.plan.features.split(',') : sub.plan.features) : ['Basic features'];
+      document.getElementById('featuresList').innerHTML = features.map(f => `
+        <li><i class="bi bi-check-circle"></i> ${f.trim()}</li>
+      `).join('');
+    }
+
+    function renderNoSubscription() {
+      document.getElementById('planName').textContent = 'No Active Subscription';
+      document.getElementById('planDescription').textContent = 'Subscribe to unlock all features';
+      document.getElementById('planPrice').textContent = '-';
+      document.getElementById('statusBadge').textContent = 'None';
+      document.getElementById('statusBadge').className = 'plan-badge';
+      document.getElementById('cancelBtn').classList.add('d-none');
+      document.getElementById('featuresList').innerHTML = '<li>No features available</li>';
+    }
+
+    async function cancelSubscription() {
+      if (!confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your current billing period.')) return;
+
+      try {
+        const res = await fetch(`${basePath}/admin/api/subscription/cancel?token=${token}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          alert('Subscription canceled successfully');
+          loadSubscription();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to cancel subscription'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function resumeSubscription() {
+      try {
+        const res = await fetch(`${basePath}/admin/api/subscription/resume?token=${token}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          alert('Subscription resumed successfully');
+          loadSubscription();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to resume subscription'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

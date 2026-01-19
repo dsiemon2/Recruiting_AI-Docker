@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trial Codes - AI Recruiting Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <script>window.APP_BASE_PATH = '<%= basePath %>';</script>
+  <style>
+    :root {
+      --sidebar-bg: <%= branding?.primaryColor || '#0d9488' %>;
+      --sidebar-hover: <%= branding?.secondaryColor || '#0f766e' %>;
+      --primary-color: <%= branding?.primaryColor || '#0d9488' %>;
+    }
+    .sidebar {
+      background: var(--sidebar-bg);
+      height: calc(100vh - 56px);
+      position: sticky;
+      top: 56px;
+      overflow-y: scroll !important;
+    }
+    .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 0.75rem 1rem; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .sidebar .nav-link i { margin-right: 0.5rem; }
+    .main-content { background: #f8f9fa; min-height: 100vh; }
+    .nav-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 0.5rem 0; }
+    .nav-section { color: rgba(255,255,255,0.5); font-size: 0.75rem; padding: 0.5rem 1rem; text-transform: uppercase; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .stat-card h3 { font-size: 2rem; margin: 0; color: var(--primary-color); }
+    .stat-card p { margin: 0; color: #666; }
+    .badge-pending { background: #ffc107; color: #000; }
+    .badge-sent { background: #17a2b8; color: #fff; }
+    .badge-redeemed { background: #28a745; color: #fff; }
+    .badge-expired { background: #6c757d; color: #fff; }
+    .badge-revoked { background: #dc3545; color: #fff; }
+  </style>
+</head>
+<body>
+  <%- include('_topnav', { token, basePath, branding, userRole, userName }) %>
+  <div class="container-fluid">
+    <div class="row">
+      <%- include('_sidebar', { token, active: 'trial-codes', basePath, branding, userRole }) %>
+
+      <main class="col-md-10 ms-sm-auto main-content p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2><i class="bi bi-ticket-perforated me-2" style="color: var(--primary-color);"></i>Trial Codes</h2>
+          <button class="btn btn-primary" onclick="showCreateModal()">
+            <i class="bi bi-plus-lg me-1"></i> Create Trial Code
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 id="totalCodes">0</h3>
+              <p>Total Codes</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 id="pendingCodes">0</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 id="redeemedCodes">0</h3>
+              <p>Redeemed</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h3 id="expiredCodes">0</h3>
+              <p>Expired</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Codes Table -->
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Email/Phone</th>
+                  <th>Status</th>
+                  <th>Trial Days</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="codesTableBody">
+                <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  <div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Create Trial Code</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Email (optional)</label>
+            <input type="email" class="form-control" id="createEmail" placeholder="recipient@example.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone (optional)</label>
+            <input type="tel" class="form-control" id="createPhone" placeholder="+1234567890">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Trial Days</label>
+            <input type="number" class="form-control" id="createTrialDays" value="14" min="1" max="90">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Expires In (days)</label>
+            <input type="number" class="form-control" id="createExpiresDays" value="30" min="1" max="365">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="createCode()">Create Code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const token = '<%= token %>';
+    const basePath = window.APP_BASE_PATH || '';
+    let createModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createModal = new bootstrap.Modal(document.getElementById('createModal'));
+      loadTrialCodes();
+    });
+
+    async function loadTrialCodes() {
+      try {
+        const res = await fetch(`${basePath}/admin/api/trial-codes?token=${token}`);
+        const data = await res.json();
+        if (data.success) {
+          updateStats(data.stats || {});
+          renderCodes(data.codes || []);
+        }
+      } catch (err) {
+        console.error('Error loading trial codes:', err);
+      }
+    }
+
+    function updateStats(stats) {
+      document.getElementById('totalCodes').textContent = stats.total || 0;
+      document.getElementById('pendingCodes').textContent = stats.pending || 0;
+      document.getElementById('redeemedCodes').textContent = stats.redeemed || 0;
+      document.getElementById('expiredCodes').textContent = stats.expired || 0;
+    }
+
+    function renderCodes(codes) {
+      const tbody = document.getElementById('codesTableBody');
+      if (codes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No trial codes found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = codes.map(code => `
+        <tr>
+          <td><code>${code.code}</code></td>
+          <td>${code.email || code.phone || '-'}</td>
+          <td><span class="badge badge-${code.status.toLowerCase()}">${code.status}</span></td>
+          <td>${code.trialDays} days</td>
+          <td>${new Date(code.expiresAt).toLocaleDateString()}</td>
+          <td>
+            ${code.status === 'PENDING' ? `
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="extendCode('${code.id}')" title="Extend">
+                <i class="bi bi-calendar-plus"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="revokeCode('${code.id}')" title="Revoke">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            ` : '-'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showCreateModal() {
+      document.getElementById('createEmail').value = '';
+      document.getElementById('createPhone').value = '';
+      document.getElementById('createTrialDays').value = '14';
+      document.getElementById('createExpiresDays').value = '30';
+      createModal.show();
+    }
+
+    async function createCode() {
+      const email = document.getElementById('createEmail').value;
+      const phone = document.getElementById('createPhone').value;
+      const trialDays = parseInt(document.getElementById('createTrialDays').value);
+      const expiresDays = parseInt(document.getElementById('createExpiresDays').value);
+
+      try {
+        const res = await fetch(`${basePath}/admin/api/trial-codes?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, phone, trialDays, expiresDays })
+        });
+        const data = await res.json();
+        if (data.success) {
+          createModal.hide();
+          loadTrialCodes();
+          alert('Trial code created: ' + data.code.code);
+        } else {
+          alert('Error: ' + (data.error || 'Failed to create code'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function extendCode(id) {
+      const days = prompt('Extend by how many days?', '7');
+      if (!days) return;
+
+      try {
+        const res = await fetch(`${basePath}/admin/api/trial-codes/${id}/extend?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ days: parseInt(days) })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadTrialCodes();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to extend code'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function revokeCode(id) {
+      if (!confirm('Are you sure you want to revoke this trial code?')) return;
+
+      try {
+        const res = await fetch(`${basePath}/admin/api/trial-codes/${id}/revoke?token=${token}`, {
+          method: 'POST'
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadTrialCodes();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to revoke code'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -189,6 +189,11 @@
     <div class="nav-divider"></div>
     <div class="nav-section">Billing</div>
     <li class="nav-item">
+      <a class="nav-link <%= active === 'trial-codes' ? 'active' : '' %>" href="<%= basePath %>/admin/trial-codes?token=<%= token %>">
+        <i class="bi bi-ticket-perforated"></i> Trial Codes
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link <%= active === 'payment-gateways' ? 'active' : '' %>" href="<%= basePath %>/admin/payment-gateways?token=<%= token %>">
         <i class="bi bi-credit-card-2-front"></i> Payment Gateways
       </a>
@@ -199,6 +204,25 @@
       </a>
     </li>
     <% } %>
+
+    <!-- Account Section -->
+    <div class="nav-divider"></div>
+    <div class="nav-section">Account</div>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'account' ? 'active' : '' %>" href="<%= basePath %>/admin/account?token=<%= token %>">
+        <i class="bi bi-shield-check"></i> Account Settings
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'my-subscription' ? 'active' : '' %>" href="<%= basePath %>/admin/my-subscription?token=<%= token %>">
+        <i class="bi bi-person-badge"></i> My Subscription
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active === 'pricing' ? 'active' : '' %>" href="<%= basePath %>/admin/pricing?token=<%= token %>">
+        <i class="bi bi-tags"></i> Pricing Plans
+      </a>
+    </li>
 
     <!-- System Settings - SUPER_ADMIN only -->
     <% if (isSuperAdmin) { %>

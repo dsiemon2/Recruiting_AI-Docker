@@ -2473,6 +2473,272 @@ router.delete('/api/account/devices', async (req: AdminRequest, res: Response) =
   }
 });
 
+// ============================================
+// Trial Codes
+// ============================================
+
+router.get('/trial-codes', async (req: AdminRequest, res: Response) => {
+  try {
+    const viewData = await getViewData(req, res, 'trial-codes');
+    res.render('admin/trial-codes', viewData);
+  } catch (err) {
+    logger.error({ err }, 'Trial codes page error');
+    res.render('admin/error', { error: 'Failed to load trial codes', token: res.locals.token, basePath });
+  }
+});
+
+router.get('/api/trial-codes', async (req: AdminRequest, res: Response) => {
+  try {
+    const codes = await prisma.trialCode.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const stats = {
+      total: codes.length,
+      pending: codes.filter((c: any) => c.status === 'PENDING').length,
+      redeemed: codes.filter((c: any) => c.status === 'REDEEMED').length,
+      expired: codes.filter((c: any) => c.status === 'EXPIRED').length
+    };
+
+    res.json({ success: true, codes, stats });
+  } catch (err) {
+    logger.error({ err }, 'Get trial codes error');
+    res.status(500).json({ success: false, error: 'Failed to get trial codes' });
+  }
+});
+
+router.post('/api/trial-codes', async (req: AdminRequest, res: Response) => {
+  try {
+    const { email, phone, trialDays = 14, expiresDays = 30 } = req.body;
+
+    const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + expiresDays);
+
+    const trialCode = await prisma.trialCode.create({
+      data: {
+        code,
+        email: email || null,
+        phone: phone || null,
+        trialDays,
+        expiresAt,
+        status: 'PENDING'
+      }
+    });
+
+    res.json({ success: true, code: trialCode });
+  } catch (err) {
+    logger.error({ err }, 'Create trial code error');
+    res.status(500).json({ success: false, error: 'Failed to create trial code' });
+  }
+});
+
+router.post('/api/trial-codes/:id/extend', async (req: AdminRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { days = 7 } = req.body;
+
+    const trialCode = await prisma.trialCode.findUnique({ where: { id } });
+    if (!trialCode) {
+      return res.status(404).json({ success: false, error: 'Trial code not found' });
+    }
+
+    const newExpiry = new Date(trialCode.expiresAt);
+    newExpiry.setDate(newExpiry.getDate() + days);
+
+    await prisma.trialCode.update({
+      where: { id },
+      data: { expiresAt: newExpiry }
+    });
+
+    res.json({ success: true, message: 'Trial code extended' });
+  } catch (err) {
+    logger.error({ err }, 'Extend trial code error');
+    res.status(500).json({ success: false, error: 'Failed to extend trial code' });
+  }
+});
+
+router.post('/api/trial-codes/:id/revoke', async (req: AdminRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.trialCode.update({
+      where: { id },
+      data: { status: 'REVOKED', revokedAt: new Date() }
+    });
+
+    res.json({ success: true, message: 'Trial code revoked' });
+  } catch (err) {
+    logger.error({ err }, 'Revoke trial code error');
+    res.status(500).json({ success: false, error: 'Failed to revoke trial code' });
+  }
+});
+
+// ============================================
+// My Subscription
+// ============================================
+
+router.get('/my-subscription', async (req: AdminRequest, res: Response) => {
+  try {
+    const viewData = await getViewData(req, res, 'my-subscription');
+    res.render('admin/my-subscription', viewData);
+  } catch (err) {
+    logger.error({ err }, 'My subscription page error');
+    res.render('admin/error', { error: 'Failed to load subscription', token: res.locals.token, basePath });
+  }
+});
+
+router.get('/api/my-subscription', async (req: AdminRequest, res: Response) => {
+  try {
+    if (!req.userId || req.userId === 'system') {
+      return res.json({ success: true, subscription: null });
+    }
+
+    const subscription = await prisma.subscription.findFirst({
+      where: { userId: req.userId },
+      include: { plan: true }
+    });
+
+    res.json({ success: true, subscription });
+  } catch (err) {
+    logger.error({ err }, 'Get subscription error');
+    res.status(500).json({ success: false, error: 'Failed to get subscription' });
+  }
+});
+
+router.post('/api/subscription/cancel', async (req: AdminRequest, res: Response) => {
+  try {
+    if (!req.userId || req.userId === 'system') {
+      return res.status(403).json({ success: false, error: 'Cannot cancel subscription' });
+    }
+
+    const subscription = await prisma.subscription.findFirst({
+      where: { userId: req.userId, status: 'active' }
+    });
+
+    if (subscription) {
+      await prisma.subscription.update({
+        where: { id: subscription.id },
+        data: { status: 'canceled', canceledAt: new Date() }
+      });
+    }
+
+    res.json({ success: true, message: 'Subscription canceled' });
+  } catch (err) {
+    logger.error({ err }, 'Cancel subscription error');
+    res.status(500).json({ success: false, error: 'Failed to cancel subscription' });
+  }
+});
+
+router.post('/api/subscription/resume', async (req: AdminRequest, res: Response) => {
+  try {
+    if (!req.userId || req.userId === 'system') {
+      return res.status(403).json({ success: false, error: 'Cannot resume subscription' });
+    }
+
+    const subscription = await prisma.subscription.findFirst({
+      where: { userId: req.userId, status: 'canceled' }
+    });
+
+    if (subscription) {
+      await prisma.subscription.update({
+        where: { id: subscription.id },
+        data: { status: 'active', canceledAt: null }
+      });
+    }
+
+    res.json({ success: true, message: 'Subscription resumed' });
+  } catch (err) {
+    logger.error({ err }, 'Resume subscription error');
+    res.status(500).json({ success: false, error: 'Failed to resume subscription' });
+  }
+});
+
+// ============================================
+// Pricing Plans
+// ============================================
+
+router.get('/pricing', async (req: AdminRequest, res: Response) => {
+  try {
+    const viewData = await getViewData(req, res, 'pricing');
+    res.render('admin/pricing', viewData);
+  } catch (err) {
+    logger.error({ err }, 'Pricing page error');
+    res.render('admin/error', { error: 'Failed to load pricing', token: res.locals.token, basePath });
+  }
+});
+
+router.get('/api/pricing', async (req: AdminRequest, res: Response) => {
+  try {
+    const plans = await prisma.subscriptionPlan.findMany({
+      where: { isActive: true },
+      orderBy: { price: 'asc' }
+    });
+
+    let currentPlanId = null;
+    if (req.userId && req.userId !== 'system') {
+      const subscription = await prisma.subscription.findFirst({
+        where: { userId: req.userId },
+        orderBy: { createdAt: 'desc' }
+      });
+      if (subscription) {
+        currentPlanId = subscription.planId;
+      }
+    }
+
+    res.json({ success: true, plans, currentPlanId });
+  } catch (err) {
+    logger.error({ err }, 'Get pricing error');
+    res.status(500).json({ success: false, error: 'Failed to get pricing' });
+  }
+});
+
+router.post('/api/subscription/subscribe/:planId', async (req: AdminRequest, res: Response) => {
+  try {
+    const { planId } = req.params;
+
+    const plan = await prisma.subscriptionPlan.findUnique({ where: { id: planId } });
+    if (!plan) {
+      return res.status(404).json({ success: false, error: 'Plan not found' });
+    }
+
+    // For demo, return a mock checkout URL
+    res.json({ success: true, checkout_url: `https://checkout.stripe.com/pay/${planId}` });
+  } catch (err) {
+    logger.error({ err }, 'Subscribe error');
+    res.status(500).json({ success: false, error: 'Failed to subscribe' });
+  }
+});
+
+router.post('/api/subscription/start-trial/:planId', async (req: AdminRequest, res: Response) => {
+  try {
+    const { planId } = req.params;
+
+    if (!req.userId || req.userId === 'system') {
+      return res.status(403).json({ success: false, error: 'Cannot start trial' });
+    }
+
+    const trialEndsAt = new Date();
+    trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+
+    await prisma.subscription.create({
+      data: {
+        userId: req.userId,
+        planId,
+        status: 'trialing',
+        trialEndsAt,
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: trialEndsAt
+      }
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    logger.error({ err }, 'Start trial error');
+    res.status(500).json({ success: false, error: 'Failed to start trial' });
+  }
+});
+
 export default router;
 
 // ============================================
