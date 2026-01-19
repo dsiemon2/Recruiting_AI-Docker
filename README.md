@@ -22,6 +22,9 @@ AI-powered recruiting assistant with MS Teams integration.
 ### Payment Gateways
 Stripe, Braintree, Square, Authorize.net
 
+### SMS/Notifications
+- **Twilio** - SMS notifications for interview reminders
+
 ## Ports
 
 | Service | Port | Description |
