@@ -1,4 +1,13 @@
-# Project Conventions for Claude Code
+# Recruiting AI - Project Reference
+
+**Type:** AI-Powered Interview Platform
+**Port:** 8085
+**URL Prefix:** /RecruitingAI/
+**Status:** Active (Development)
+**Live URL:** https://www.recruitabilityai.com
+**Last Updated:** 2026-01-19
+
+---
 
 ## Role-Based Access Control (RBAC)
 
@@ -217,6 +226,46 @@ docker compose down && docker compose up -d
 docker compose down
 rm -rf data/
 docker compose up -d
+```
+
+---
+
+## Logging
+
+Pino-based logging with pretty printing in development:
+
+```
+src/utils/logger.ts
+```
+
+### Features
+- **Pino Logger**: Fast, low-overhead JSON logging
+- **Pretty Printing**: Colorized output in development with pino-pretty
+- **Log Levels**: Configurable via LOG_LEVEL environment variable
+- **Timestamps**: Human-readable timestamps in development
+- **Production Mode**: Raw JSON output for log aggregation
+
+### Log Levels
+- `fatal` - Critical errors
+- `error` - Error conditions
+- `warn` - Warning conditions
+- `info` - Informational messages (default)
+- `debug` - Debug information
+- `trace` - Trace-level logging
+
+### Usage
+```typescript
+import logger from '../utils/logger';
+
+logger.info('Interview session started');
+logger.error({ error: err.message }, 'Database connection failed');
+logger.debug({ candidateId, jobRole }, 'Processing interview');
+```
+
+### Configuration
+```bash
+# Environment variable
+LOG_LEVEL=debug  # Set log level (default: info)
 ```
 
 ## Subscription Pricing
