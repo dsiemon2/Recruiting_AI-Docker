@@ -881,7 +881,7 @@ async function main() {
   // PAYMENT GATEWAYS
   // =====================
   const paymentGateways = [
-    { provider: 'stripe', isEnabled: true, testMode: true },
+    { provider: 'stripe', isEnabled: true, testMode: false, publishableKey: 'pk_test_YOUR_PUBLISHABLE_KEY', secretKey: 'sk_test_YOUR_SECRET_KEY' },
     { provider: 'paypal', isEnabled: false, testMode: true },
     { provider: 'braintree', isEnabled: false, testMode: true },
     { provider: 'square', isEnabled: false, testMode: true },
