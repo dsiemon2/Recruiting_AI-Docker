@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { logger } from '../../utils/logger';
 import { config } from '../../config/index.js';
 import { Scorecard, Recommendation } from '../../types/index.js';
 
@@ -146,7 +147,7 @@ Please analyze this interview and respond in the following JSON format:
       scorecard: analysis.scorecard || createDefaultScorecard(),
     };
   } catch (error) {
-    console.error('Error generating interview summary:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Error generating interview summary:');
     throw error;
   }
 }
@@ -199,7 +200,7 @@ Provide brief insights in this JSON format:
 
     return JSON.parse(content);
   } catch (error) {
-    console.error('Error generating quick insights:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Error generating quick insights:');
     return { suggestions: [], redFlags: [], followUps: [] };
   }
 }
@@ -266,7 +267,7 @@ Respond in JSON format:
 
     return JSON.parse(content);
   } catch (error) {
-    console.error('Error comparing candidates:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Error comparing candidates:');
     throw error;
   }
 }

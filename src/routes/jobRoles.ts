@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logger } from '../utils/logger';
 import { z } from 'zod';
 import * as jobRoleService from '../services/jobRoleService.js';
 import { authenticateUser } from '../middleware/auth.js';
@@ -53,7 +54,7 @@ router.get('/', requireManager, async (req: AuthenticatedRequest, res: Response)
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('List job roles error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'List job roles error:');
     res.status(500).json({ success: false, error: 'Failed to list job roles' });
   }
 });
@@ -78,7 +79,7 @@ router.post('/', requireCompanyAdmin, async (req: AuthenticatedRequest, res: Res
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create job role error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create job role error:');
     res.status(500).json({ success: false, error: 'Failed to create job role' });
   }
 });
@@ -113,7 +114,7 @@ router.get('/:id', requireManager, async (req: AuthenticatedRequest, res: Respon
 
     res.json({ success: true, data: jobRoleWithParsedQuestions });
   } catch (error) {
-    console.error('Get job role error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get job role error:');
     res.status(500).json({ success: false, error: 'Failed to get job role' });
   }
 });
@@ -136,7 +137,7 @@ router.put('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res: R
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update job role error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update job role error:');
     res.status(500).json({ success: false, error: 'Failed to update job role' });
   }
 });
@@ -154,7 +155,7 @@ router.delete('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res
 
     res.json({ success: true, message: 'Job role archived' });
   } catch (error) {
-    console.error('Delete job role error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Delete job role error:');
     res.status(500).json({ success: false, error: 'Failed to archive job role' });
   }
 });
@@ -183,7 +184,7 @@ router.get('/:id/categories', requireManager, async (req: AuthenticatedRequest, 
 
     res.json({ success: true, data: categoriesWithParsed });
   } catch (error) {
-    console.error('Get categories error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get categories error:');
     res.status(500).json({ success: false, error: 'Failed to get categories' });
   }
 });
@@ -210,7 +211,7 @@ router.post('/:id/categories', requireCompanyAdmin, async (req: AuthenticatedReq
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create category error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create category error:');
     res.status(500).json({ success: false, error: 'Failed to create category' });
   }
 });
@@ -233,7 +234,7 @@ router.put('/:id/categories/:categoryId', requireCompanyAdmin, async (req: Authe
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update category error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update category error:');
     res.status(500).json({ success: false, error: 'Failed to update category' });
   }
 });
@@ -251,7 +252,7 @@ router.delete('/:id/categories/:categoryId', requireCompanyAdmin, async (req: Au
 
     res.json({ success: true, message: 'Category deleted' });
   } catch (error) {
-    console.error('Delete category error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Delete category error:');
     res.status(500).json({ success: false, error: 'Failed to delete category' });
   }
 });
@@ -274,7 +275,7 @@ router.post('/:id/categories/reorder', requireCompanyAdmin, async (req: Authenti
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Reorder categories error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Reorder categories error:');
     res.status(500).json({ success: false, error: 'Failed to reorder categories' });
   }
 });

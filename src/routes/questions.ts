@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logger } from '../utils/logger';
 import { z } from 'zod';
 import * as questionService from '../services/questionService.js';
 import { authenticateUser } from '../middleware/auth.js';
@@ -78,7 +79,7 @@ router.get('/', requireManager, async (req: AuthenticatedRequest, res: Response)
 
     res.status(400).json({ success: false, error: 'categoryId or jobRoleId is required' });
   } catch (error) {
-    console.error('List questions error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'List questions error:');
     res.status(500).json({ success: false, error: 'Failed to list questions' });
   }
 });
@@ -105,7 +106,7 @@ router.post('/', requireCompanyAdmin, async (req: AuthenticatedRequest, res: Res
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create question error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create question error:');
     res.status(500).json({ success: false, error: 'Failed to create question' });
   }
 });
@@ -127,7 +128,7 @@ router.get('/:id', requireManager, async (req: AuthenticatedRequest, res: Respon
 
     res.json({ success: true, data: question });
   } catch (error) {
-    console.error('Get question error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get question error:');
     res.status(500).json({ success: false, error: 'Failed to get question' });
   }
 });
@@ -149,7 +150,7 @@ router.put('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res: R
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update question error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update question error:');
     res.status(500).json({ success: false, error: 'Failed to update question' });
   }
 });
@@ -166,7 +167,7 @@ router.delete('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res
 
     res.json({ success: true, message: 'Question deleted' });
   } catch (error) {
-    console.error('Delete question error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Delete question error:');
     res.status(500).json({ success: false, error: 'Failed to delete question' });
   }
 });
@@ -193,7 +194,7 @@ router.post('/reorder', requireCompanyAdmin, async (req: AuthenticatedRequest, r
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Reorder questions error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Reorder questions error:');
     res.status(500).json({ success: false, error: 'Failed to reorder questions' });
   }
 });
@@ -221,7 +222,7 @@ router.post('/import', requireCompanyAdmin, async (req: AuthenticatedRequest, re
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Import questions error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Import questions error:');
     res.status(500).json({ success: false, error: 'Failed to import questions' });
   }
 });

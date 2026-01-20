@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logger } from '../utils/logger';
 import { z } from 'zod';
 import * as userService from '../services/userService.js';
 import { authenticateUser } from '../middleware/auth.js';
@@ -42,7 +43,7 @@ router.get('/', requireCompanyAdmin, async (req: AuthenticatedRequest, res: Resp
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('List users error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'List users error:');
     res.status(500).json({ success: false, error: 'Failed to list users' });
   }
 });
@@ -75,7 +76,7 @@ router.post('/', requireCompanyAdmin, async (req: AuthenticatedRequest, res: Res
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create user error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create user error:');
     res.status(500).json({ success: false, error: 'Failed to create user' });
   }
 });
@@ -98,7 +99,7 @@ router.get('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res: R
 
     res.json({ success: true, data: user });
   } catch (error) {
-    console.error('Get user error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get user error:');
     res.status(500).json({ success: false, error: 'Failed to get user' });
   }
 });
@@ -133,7 +134,7 @@ router.put('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res: R
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update user error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update user error:');
     res.status(500).json({ success: false, error: 'Failed to update user' });
   }
 });
@@ -157,7 +158,7 @@ router.delete('/:id', requireCompanyAdmin, async (req: AuthenticatedRequest, res
 
     res.json({ success: true, message: 'User deleted' });
   } catch (error) {
-    console.error('Delete user error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Delete user error:');
     res.status(500).json({ success: false, error: 'Failed to delete user' });
   }
 });

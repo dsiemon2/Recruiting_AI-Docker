@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logger } from '../utils/logger';
 import { z } from 'zod';
 import * as companyService from '../services/companyService.js';
 import { authenticateSuperAdmin } from '../middleware/auth.js';
@@ -37,7 +38,7 @@ router.get('/companies', async (req: AuthenticatedRequest, res: Response) => {
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('List companies error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'List companies error:');
     res.status(500).json({ success: false, error: 'Failed to list companies' });
   }
 });
@@ -65,7 +66,7 @@ router.post('/companies', async (req: AuthenticatedRequest, res: Response) => {
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create company error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create company error:');
     res.status(500).json({ success: false, error: 'Failed to create company' });
   }
 });
@@ -89,7 +90,7 @@ router.get('/companies/:id', async (req: AuthenticatedRequest, res: Response) =>
 
     res.json({ success: true, data: { ...company, stats } });
   } catch (error) {
-    console.error('Get company error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get company error:');
     res.status(500).json({ success: false, error: 'Failed to get company' });
   }
 });
@@ -120,7 +121,7 @@ router.put('/companies/:id', async (req: AuthenticatedRequest, res: Response) =>
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update company error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update company error:');
     res.status(500).json({ success: false, error: 'Failed to update company' });
   }
 });
@@ -137,7 +138,7 @@ router.delete('/companies/:id', async (req: AuthenticatedRequest, res: Response)
 
     res.json({ success: true, message: 'Company deleted' });
   } catch (error) {
-    console.error('Delete company error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Delete company error:');
     res.status(500).json({ success: false, error: 'Failed to delete company' });
   }
 });

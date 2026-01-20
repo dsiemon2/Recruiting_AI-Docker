@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logger } from '../utils/logger';
 import { z } from 'zod';
 import * as interviewService from '../services/interviewService.js';
 import { generateInterviewSummary, JobRoleContext, TranscriptSegment } from '../services/ai/summaryService.js';
@@ -92,7 +93,7 @@ router.get('/', requireManager, async (req: AuthenticatedRequest, res: Response)
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('List interviews error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'List interviews error:');
     res.status(500).json({ success: false, error: 'Failed to list interviews' });
   }
 });
@@ -120,7 +121,7 @@ router.post('/', requireManager, async (req: AuthenticatedRequest, res: Response
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Create interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create interview error:');
     res.status(500).json({ success: false, error: 'Failed to create interview' });
   }
 });
@@ -138,7 +139,7 @@ router.get('/upcoming', requireManager, async (req: AuthenticatedRequest, res: R
 
     res.json({ success: true, data: interviews });
   } catch (error) {
-    console.error('Get upcoming interviews error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get upcoming interviews error:');
     res.status(500).json({ success: false, error: 'Failed to get upcoming interviews' });
   }
 });
@@ -157,7 +158,7 @@ router.get('/stats', requireCompanyAdmin, async (req: AuthenticatedRequest, res:
 
     res.json({ success: true, data: stats });
   } catch (error) {
-    console.error('Get interview stats error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get interview stats error:');
     res.status(500).json({ success: false, error: 'Failed to get statistics' });
   }
 });
@@ -176,7 +177,7 @@ router.get('/analytics', requireCompanyAdmin, async (req: AuthenticatedRequest, 
 
     res.json({ success: true, data: analytics });
   } catch (error) {
-    console.error('Get analytics error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get analytics error:');
     res.status(500).json({ success: false, error: 'Failed to get analytics' });
   }
 });
@@ -194,7 +195,7 @@ router.get('/analytics/trends', requireCompanyAdmin, async (req: AuthenticatedRe
 
     res.json({ success: true, data: trends });
   } catch (error) {
-    console.error('Get trends error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get trends error:');
     res.status(500).json({ success: false, error: 'Failed to get trends' });
   }
 });
@@ -212,7 +213,7 @@ router.get('/analytics/top-candidates', requireCompanyAdmin, async (req: Authent
 
     res.json({ success: true, data: candidates });
   } catch (error) {
-    console.error('Get top candidates error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get top candidates error:');
     res.status(500).json({ success: false, error: 'Failed to get top candidates' });
   }
 });
@@ -254,7 +255,7 @@ router.get('/:id', requireManager, async (req: AuthenticatedRequest, res: Respon
 
     res.json({ success: true, data: interviewWithParsed });
   } catch (error) {
-    console.error('Get interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get interview error:');
     res.status(500).json({ success: false, error: 'Failed to get interview' });
   }
 });
@@ -280,7 +281,7 @@ router.put('/:id', requireManager, async (req: AuthenticatedRequest, res: Respon
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Update interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Update interview error:');
     res.status(500).json({ success: false, error: 'Failed to update interview' });
   }
 });
@@ -298,7 +299,7 @@ router.delete('/:id', requireManager, async (req: AuthenticatedRequest, res: Res
 
     res.json({ success: true, message: 'Interview cancelled' });
   } catch (error) {
-    console.error('Cancel interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Cancel interview error:');
     res.status(500).json({ success: false, error: 'Failed to cancel interview' });
   }
 });
@@ -323,7 +324,7 @@ router.post('/:id/start', requireManager, async (req: AuthenticatedRequest, res:
 
     res.json({ success: true, message: 'Interview started' });
   } catch (error) {
-    console.error('Start interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Start interview error:');
     res.status(500).json({ success: false, error: 'Failed to start interview' });
   }
 });
@@ -348,7 +349,7 @@ router.post('/:id/end', requireManager, async (req: AuthenticatedRequest, res: R
 
     res.json({ success: true, message: 'Interview ended' });
   } catch (error) {
-    console.error('End interview error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'End interview error:');
     res.status(500).json({ success: false, error: 'Failed to end interview' });
   }
 });
@@ -370,7 +371,7 @@ router.get('/:id/result', requireManager, async (req: AuthenticatedRequest, res:
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('Get interview result error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Get interview result error:');
     res.status(500).json({ success: false, error: 'Failed to get result' });
   }
 });
@@ -392,7 +393,7 @@ router.post('/:id/result', requireManager, async (req: AuthenticatedRequest, res
       res.status(400).json({ success: false, error: 'Invalid input', details: error.errors });
       return;
     }
-    console.error('Save interview result error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Save interview result error:');
     res.status(500).json({ success: false, error: 'Failed to save result' });
   }
 });
@@ -466,7 +467,7 @@ router.post('/:id/generate-summary', requireManager, async (req: AuthenticatedRe
       },
     });
   } catch (error) {
-    console.error('Generate summary error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Generate summary error:');
     res.status(500).json({ success: false, error: 'Failed to generate interview summary' });
   }
 });
@@ -540,7 +541,7 @@ router.post('/:id/session', requireManager, async (req: AuthenticatedRequest, re
       }
     });
   } catch (error) {
-    console.error('Create web session error:', error);
+    logger.error({ error: error instanceof Error ? error.message : String(error) }, 'Create web session error:');
     res.status(500).json({ success: false, error: 'Failed to create interview session' });
   }
 });
