@@ -32,7 +32,7 @@ OPENAI_API_KEY=sk-your-key-here
 ADMIN_TOKEN=choose-a-secure-token
 PORT=8050
 ADMIN_PORT=8051
-DATABASE_URL=file:./dev.db
+DATABASE_URL=postgresql://recruitingai:recruitingai_password@localhost:5438/recruitingai_db
 ```
 
 ### 3. Initialize Database
@@ -227,19 +227,33 @@ Click **Import > Download Template** to get pre-formatted Excel or CSV files.
 
 ## Database Management
 
+The application uses PostgreSQL as its database.
+
 ```bash
 # View database in browser
 npx prisma studio
 
-# Reset database (deletes all data!)
-rm prisma/dev.db        # Mac/Linux
-del prisma\dev.db       # Windows
-npx prisma db push
+# Reset database (Docker - deletes all data!)
+docker compose down -v
+docker compose up -d
+
+# Reset database (local development)
+npx prisma db push --force-reset
 npx prisma db seed
 
 # Run migrations (if schema changed)
 npx prisma migrate dev
+
+# Connect to PostgreSQL directly (Docker)
+docker exec -it recruitingai_postgres psql -U recruitingai -d recruitingai_db
 ```
+
+### PostgreSQL Connection Details (Docker)
+- **Host:** localhost
+- **Port:** 5438
+- **Database:** recruitingai_db
+- **User:** recruitingai
+- **Password:** recruitingai_password
 
 ---
 
@@ -306,7 +320,7 @@ npm run build
 NODE_ENV=production
 OPENAI_API_KEY=sk-...
 ADMIN_TOKEN=secure-random-string
-DATABASE_URL=file:./prod.db
+DATABASE_URL=postgresql://recruitingai:your_secure_password@postgres:5432/recruitingai_db
 PORT=8050
 ADMIN_PORT=8051
 ```

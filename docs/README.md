@@ -121,10 +121,18 @@ Uses `Company` model with `companyId` foreign key for tenant isolation.
 ## Tech Stack
 
 - **Backend:** Node.js + Express + TypeScript
-- **Database:** Prisma ORM + SQLite
+- **Database:** Prisma ORM + PostgreSQL 15
 - **Frontend:** EJS templates + Bootstrap 5.3.2 + Bootstrap Icons
 - **Real-time:** WebSockets (OpenAI Realtime API)
 - **Authentication:** JWT tokens + bcrypt
+
+### PostgreSQL Connection (Docker)
+| Property | Value |
+|----------|-------|
+| Host | localhost |
+| Port | 5438 |
+| Database | recruitingai_db |
+| User | recruitingai |
 
 ---
 

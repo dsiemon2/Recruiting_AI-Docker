@@ -10,7 +10,7 @@ AI-powered recruiting assistant with MS Teams integration.
 - **Runtime:** Node.js
 - **Framework:** Express 4.19
 - **Language:** TypeScript 5.6
-- **Database:** SQLite
+- **Database:** PostgreSQL 15
 - **ORM:** Prisma 5.19
 - **WebSockets:** ws 8.18.0
 
@@ -30,6 +30,7 @@ Stripe, Braintree, Square, Authorize.net
 | Service | Port | Description |
 |---------|------|-------------|
 | Nginx Proxy | 8085 | Main entry point |
+| PostgreSQL | 5438 | Database (exposed for debugging) |
 | App Server | 3000 | Internal - Main application |
 | Admin Server | 3001 | Internal - Admin panel |
 
