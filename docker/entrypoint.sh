@@ -1,16 +1,32 @@
 #!/bin/sh
 set -e
 
-# Wait for database file to be accessible
-echo "Checking database..."
+echo "Starting Recruiting AI..."
 
-# Run Prisma migrations/push
-echo "Running Prisma db push..."
-npx prisma db push --skip-generate --accept-data-loss
+# Wait for PostgreSQL to be ready
+echo "Waiting for PostgreSQL..."
+until pg_isready -h postgres -p 5432 -U recruitingai -d recruitingai_db; do
+    echo "PostgreSQL not ready, waiting..."
+    sleep 2
+done
+echo "PostgreSQL is ready!"
 
-# Run seed (it handles clearing and reseeding)
-echo "Running database seed..."
-npx prisma db seed || echo "Seed completed or already seeded"
+# Check if database is initialized by checking if AppConfig table has data
+ROWS=$(echo "SELECT COUNT(*) FROM \"AppConfig\";" | npx prisma db execute --stdin 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+
+if [ "$ROWS" = "0" ] || [ -z "$ROWS" ]; then
+    echo "Database not initialized. Running migrations and seed..."
+
+    # Push schema to database
+    npx prisma db push --skip-generate --accept-data-loss
+
+    # Seed the database
+    npx prisma db seed || echo "Seed completed or already seeded"
+
+    echo "Database initialized!"
+else
+    echo "Database already initialized ($ROWS config rows). Skipping seed."
+fi
 
 # Start the application
 echo "Starting application..."
